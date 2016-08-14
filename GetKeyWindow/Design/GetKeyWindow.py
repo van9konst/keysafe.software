@@ -33,7 +33,6 @@ class Ui_GetKeyWindow(object):
         self.get_key_skroll_area = QtGui.QScrollArea(self.get_key_widget)
         self.get_key_skroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.get_key_skroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.get_key_skroll_area.setSizeAdjustPolicy(QtGui.QAbstractScrollArea.AdjustIgnored)
         self.get_key_skroll_area.setWidgetResizable(True)
         self.get_key_skroll_area.setObjectName(_fromUtf8("get_key_skroll_area"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
