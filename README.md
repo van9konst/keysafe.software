@@ -18,6 +18,7 @@ $ sudo apt-get install python-qt4 pyqt4-dev-tools qt4-designer
 - [x] Create simple UI design
 - [x] Connect windows
 - [x] Folder structure
+- [ ] Setup UnitTesting with Nose
 - [ ] Setup Database (PostgreSQL(prefer) or Mongo)
 - [ ] Spawn windows for timers(e.g. with gevents)
 - [ ] Make a runner
