@@ -18,6 +18,15 @@ sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
 ```
 
+### Create a database and user
+
+```
+psql -d postgres
+CREATE DATABASE cad_keysafe;
+CREATE USER cad_root WITH PASSWORD 'root_pass';
+GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_root;
+```
+
 ### TODO:
 
 - [x] Create requirements for Linux system
