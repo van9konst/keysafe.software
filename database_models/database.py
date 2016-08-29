@@ -47,11 +47,19 @@ class User(Base):
         new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid_c)
         
         try:
-            sess.add(new_user)
-            sess.commit()
+            self.sess.add(new_user)
+            self.sess.commit()
             self.logger.info("SUCCESS! Created user:{0} {1}, with RFID:{1}").format(firstname, lastname, rfid_c)
         except exc.SQLAlchemyError as e:
-            self.logger.error("User not created with error:{0}").format(e)
+            self.logger.info("User not created with error:{0}").format(e)
+    
+    def delete(self, user):
+        try:
+            self.sess.delete(user)
+            self.sess.commit()
+            self.logger.info("SUCCESS! Key deleted.")
+        except exc.SQLAlchemyError as e:
+            self.logger.info("ERROR!user: '{0.firstname} {0.lastname}' DO NOT deleted with RFID:{0.rfid_c}").format(user)
 
     def __repr__(self):
         return '( {0}:{1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}:{1.keys!r} )'.format(User, self)
@@ -77,11 +85,19 @@ class Key(Base):
         
         new_key = Key(room=room, rfid_s=rfid_s, status)
         try:
-            sess.add(new_key)
-            sess.commit()
+            self.sess.add(new_key)
+            self.sess.commit()
             self.logger.info("SUCCESS! Created key for room:{0}, with RFID:{1}").format(room, rfid_s)
         except exc.SQLAlchemyError as e:
-            self.logger.error("Key not created with error:{0}").format(e)
+            self.logger.info("Key not created with error:{0}").format(e)
+            
+    def delete(self, key):
+        try:
+            self.sess.delete(key)
+            self.sess.commit()
+            self.logger.info("SUCCESS! Key deleted.")
+        except exc.SQLAlchemyError as e:
+            self.logger.info("ERROR!Key DO NOT deleted from room:{0.room} with RFID:{0.rfid_s}").format(key)
         
     def __repr__(self):
         return '( {0}:{1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} )'.format(Key, self)
