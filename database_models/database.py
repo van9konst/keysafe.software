@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
+from sqlalchemy.exc import InvalidRequestError
 import logging
  
  
@@ -148,13 +149,13 @@ class Key(Base):
 class UserKeyLink(Base):
 
     __tablename__ = 'user_key_link'
-
-    user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    key_id = Column(Integer, ForeignKey('key.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    key_id = Column(Integer, ForeignKey('key.id'))
     date_taked = Column(DateTime, default=datetime.datetime.utcnow)
     date_returned = Column(DateTime, nullable=True)
-    user = relationship(User, backref=backref("user_assoc"))
-    key = relationship(Key, backref=backref("key_assoc"))
+    user = relationship(User)
+    key = relationship(Key)
 
     def __init__(self, user, key):
         self.user = user
@@ -165,9 +166,9 @@ class UserKeyLink(Base):
 
         logger.info('Start getting Key..')
         
-        if key.users:
-            logger.info('Sorry, but key from room:%s already taken by user:%s',key.room, key.users[0].lastname)
-            return key.room, key.users[0].firstname, key.users[0].lastname
+        if key.status == False:
+            logger.info('Sorry, but key from room:%s already taken by user:%s',key.room, key.users[-1].lastname)
+            return key
 
         new_get = UserKeyLink(user=user, key=key)
         try:
@@ -185,18 +186,19 @@ class UserKeyLink(Base):
         logger.info('Starting returned Key..')
         
         if key.status == True:
-            logger.info('Key already returned!', key.room)
-            return True
+            logger.info('Key from room:%s already returned!', key.room)
+            return key
 
         try:
             relation = sess.query(UserKeyLink).filter(UserKeyLink.key==key).first()
             relation.date_returned = datetime.datetime.utcnow()
             key.status = True
-            key.users = []
             sess.add(relation)
             sess.commit()
             logger.info('SUCCESS!Key from room:%s returned!',key.room)
-        except exc.SQLAlchemyError as e:
+        except (exc.SQLAlchemyError, InvalidRequestError) as e:
+            sess.rollback()
+            sess.commit()
             logger.info("ERROR!Some error happend when key id:%s returned", key.id)
 
     def __repr__(self):
@@ -214,8 +216,6 @@ user2 = User(firstname="Harry", lastname="Potter", rfid_c="333")
 user3 = User(firstname="John", lastname="Cena", rfid_c="555")
 user4 = User(firstname="Piter", lastname="Piterson", rfid_c="666")
 
-#keylink = UserKeyLink(user=user2, key=key1)
-
 sess.add_all([key1, key2, key3, user1, user2, user3, user4])
 
 sess.commit()
@@ -223,16 +223,10 @@ sess.commit()
 ukl1 = UserKeyLink.user_get_key(user2, key2)
 ukl2 = UserKeyLink.user_get_key(user3, key3)
 
+ukl3 = UserKeyLink.user_return_key(key2)
+ukl3 = UserKeyLink.user_get_key(user2, key2)
 
 
-# add one item
-# sess.add(key1)
-
-# add all items
-# sess.add_all([key1, user1, user2])
-
-# filter items from table
-# sess.query(User).filter(User.firstname == 'Harry').one()
 
 print "READY TO WORK"
 import pdb;pdb.set_trace()
