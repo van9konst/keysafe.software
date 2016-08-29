@@ -5,16 +5,27 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 import datetime
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import exc
+import logging
  
+ 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 Base = declarative_base()
 
 # connect to db
 engine = create_engine('postgresql://cad_root:root_pass@localhost:5432/cad_keysafe')
  
-
+session = sessionmaker()
+session.configure(bind=engine)
+sess = session()
 
 class User(Base):
+
     __tablename__ = 'user'
+    
     id = Column(Integer, primary_key=True)
     firstname = Column(String(50))
     lastname = Column(String(50))
@@ -28,13 +39,28 @@ class User(Base):
         self.firstname = firstname
         self.lastname = lastname
         self.rfid_c = rfid_c
+        
+    def new(self, firstname, lastname, rfid_c):
+        
+        self.logger.info('Start creating new user..')
+        
+        new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid_c)
+        
+        try:
+            sess.add(new_user)
+            sess.commit()
+            self.logger.info("SUCCESS! Created user:{0} {1}, with RFID:{1}").format(firstname, lastname, rfid_c)
+        except exc.SQLAlchemyError as e:
+            self.logger.error("User not created with error:{0}").format(e)
 
     def __repr__(self):
         return '( {0}:{1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}:{1.keys!r} )'.format(User, self)
  
  
 class Key(Base):
+
     __tablename__ = 'key'
+
     id = Column(Integer, primary_key=True)
     room = Column(String(50))
     rfid_s = Column(String(50), unique=True)
@@ -45,6 +71,18 @@ class Key(Base):
         self.rfid_s = rfid_s
         self.status = status
 
+    def new(self, room, rfid_s, status=True):
+        
+        self.logger.info('Start creating new Key..')
+        
+        new_key = Key(room=room, rfid_s=rfid_s, status)
+        try:
+            sess.add(new_key)
+            sess.commit()
+            self.logger.info("SUCCESS! Created key for room:{0}, with RFID:{1}").format(room, rfid_s)
+        except exc.SQLAlchemyError as e:
+            self.logger.error("Key not created with error:{0}").format(e)
+        
     def __repr__(self):
         return '( {0}:{1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} )'.format(Key, self)
  
@@ -64,10 +102,7 @@ class UserKeyLink(Base):
 # statements in raw SQL.
 Base.metadata.create_all(engine)
 
-from sqlalchemy.orm import sessionmaker
-session = sessionmaker()
-session.configure(bind=engine)
-sess = session()
+
 
 key1 = Key(room="123", rfid_s="111", status=True)
 key2 = Key(room="111", rfid_s="444", status=True)
