@@ -78,7 +78,7 @@ class User(Base):
         return user
 
     def __repr__(self):
-        return '( {0}:{1.firstname!r}:{1.lastname!r}:{1.rfid_c!r} )'.format(User, self)
+        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}>'.format(User, self)
  
  
 class Key(Base):
@@ -188,7 +188,7 @@ class UserKeyLink(Base):
             logger.info('SUCCESS!User: %s with RFID:%s get key from room:%s with RFID:%s',user.lastname, user.rfid_c, key.room, key.rfid_s)
             return 
         except exc.SQLAlchemyError as e:
-            logger.info("ERROR!Some error happend when user %s take a key %s", user.id , key.id)
+            logger.info("ERROR!Some error happend when user %s take a key %s. \n --- %s", user.id , key.id, e)
     
     @classmethod
     def user_return_key(self, key):
@@ -210,34 +210,7 @@ class UserKeyLink(Base):
         except (exc.SQLAlchemyError, InvalidRequestError) as e:
             sess.rollback()
             sess.commit()
-            logger.info("ERROR!Some error happend when key id:%s returned", key.id)
+            logger.info("ERROR!Some error happend when key id:%s returned \n --- %s", key.id, e)
 
     def __repr__(self):
         return '( {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} )'.format(UserKeyLink, self)
- 
-# Create all tables in the engine. This is equivalent to "Create Table"
-# statements in raw SQL.
-Base.metadata.create_all(engine)
-
-key1 = Key(room="123", rfid_s="111", status=True)
-key2 = Key(room="111", rfid_s="444", status=True)
-key3 = Key(room="222", rfid_s="888", status=True)
-user1 = User(firstname="John", lastname="Johnson", rfid_c="222")
-user2 = User(firstname="Harry", lastname="Potter", rfid_c="333")
-user3 = User(firstname="John", lastname="Cena", rfid_c="555")
-user4 = User(firstname="Piter", lastname="Piterson", rfid_c="666")
-
-sess.add_all([key1, key2, key3, user1, user2, user3, user4])
-
-sess.commit()
-
-ukl1 = UserKeyLink.user_get_key(user2, key2)
-ukl2 = UserKeyLink.user_get_key(user3, key3)
-
-ukl3 = UserKeyLink.user_return_key(key2)
-ukl3 = UserKeyLink.user_get_key(user2, key2)
-
-print "READY TO WORK"
-import pdb;pdb.set_trace()
-#Close the connection
-engine.dispose()
