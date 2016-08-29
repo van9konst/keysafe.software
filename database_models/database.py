@@ -52,15 +52,29 @@ class User(Base):
     
     @classmethod
     def delete(self, user):
+        
+        logger.info('Start deleting user..')
+        
         try:
             sess.delete(user)
             sess.commit()
-            logger.info("SUCCESS! Key deleted.")
+            logger.info("SUCCESS! user deleted.")
         except exc.SQLAlchemyError as e:
-            logger.info("ERROR!user: '%s' DO NOT deleted with RFID:'%s'", user.id, user.rfid_c)
+            logger.info("ERROR!User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
+
+    @classmethod
+    def get_user_by_rfid(self, rfid):
+
+        logger.info('Start getting user by rfid..')
+
+        try:
+            user = sess.query(User).filter(User.rfid_c==rfid).first()
+        except exc.SQLAlchemyError as e:
+            logger.info("ERROR!Can't get user by RFID:'%s'", rfid)
+        return user
 
     def __repr__(self):
-        return '( {0}:{1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}:{1.keys!r} )'.format(User, self)
+        return '( {0}:{1.firstname!r}:{1.lastname!r}:{1.rfid_c!r} )'.format(User, self)
  
  
 class Key(Base):
@@ -89,9 +103,21 @@ class Key(Base):
         try:
             key = sess.query(Key).filter(Key.rfid_s==rfid).first()
         except exc.SQLAlchemyError as e:
-            logger.info("Cant get key by rfid: %s", rfid)
+            logger.info("Cant get key by rfid: %s , %s", rfid, e)
             return False
         return key
+        
+    @classmethod
+    def get_all_keys(self):
+
+        logger.info('Getting all keys..')
+
+        try:
+            keys = sess.query(Key).filter().all()
+        except exc.SQLAlchemyError as e:
+            logger.info("Cant get all keys. %s", e)
+            return False
+        return keys
 
     @classmethod
     def new(self, room, rfid_s, status):
@@ -157,12 +183,17 @@ class UserKeyLink(Base):
     def user_return_key(self, key):
 
         logger.info('Starting returned Key..')
+        
+        if key.status == True:
+            logger.info('Key already returned!', key.room)
+            return True
 
         try:
             relation = sess.query(UserKeyLink).filter(UserKeyLink.key==key).first()
             relation.date_returned = datetime.datetime.utcnow()
             key.status = True
             key.users = []
+            sess.add(relation)
             sess.commit()
             logger.info('SUCCESS!Key from room:%s returned!',key.room)
         except exc.SQLAlchemyError as e:
