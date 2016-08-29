@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
 from sqlalchemy.exc import InvalidRequestError
 import logging
- 
- 
+
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ Base = declarative_base()
 
 # connect to db
 engine = create_engine('postgresql://cad_root:root_pass@localhost:5432/cad_keysafe')
- 
+
 session = sessionmaker()
 session.configure(bind=engine)
 sess = session()
@@ -38,11 +38,12 @@ class User(Base):
         self.rfid_c = rfid_c
 
     @classmethod
-    def new(self, firstname, lastname, rfid_c):
+    def new(self, firstname, lastname, rfid):
+        ''' Create user by str(firstname), str(lastname), str(rfid) '''
         
         logger.info('Start creating new user..')
         
-        new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid_c)
+        new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
         
         try:
             sess.add(new_user)
@@ -53,6 +54,7 @@ class User(Base):
     
     @classmethod
     def delete(self, user):
+        ''' Delete user by object user '''
         
         logger.info('Start deleting user..')
         
@@ -65,7 +67,8 @@ class User(Base):
 
     @classmethod
     def get_user_by_rfid(self, rfid):
-
+        ''' Get user by str(rfid) '''
+        
         logger.info('Start getting user by rfid..')
 
         try:
@@ -98,7 +101,8 @@ class Key(Base):
     
     @classmethod
     def get_key_by_rfid(self, rfid):
-        
+        ''' Get key by str(rfid) '''
+
         logger.info('Start getting key by RFID..')
         
         try:
@@ -110,6 +114,7 @@ class Key(Base):
         
     @classmethod
     def get_all_keys(self):
+        ''' Method for getting all keys '''
 
         logger.info('Getting all keys..')
 
@@ -121,8 +126,9 @@ class Key(Base):
         return keys
 
     @classmethod
-    def new(self, room, rfid_s, status):
-
+    def new(self, room, rfid_s):
+        ''' Create key, str(room), str(rfid)'''
+        
         logger.info('Start creating new Key..')
 
         new_key = Key(room=room, rfid_s=rfid_s, status=True)
@@ -135,6 +141,8 @@ class Key(Base):
 
     @classmethod
     def delete(self, key):
+        ''' Delete key by object '''
+        
         try:
             sess.delete(key)
             sess.commit()
@@ -149,6 +157,7 @@ class Key(Base):
 class UserKeyLink(Base):
 
     __tablename__ = 'user_key_link'
+    
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     key_id = Column(Integer, ForeignKey('key.id'))
@@ -163,7 +172,8 @@ class UserKeyLink(Base):
 
     @classmethod
     def user_get_key(self, user, key):
-
+        ''' Get key by user and key object'''
+        
         logger.info('Start getting Key..')
         
         if key.status == False:
@@ -182,6 +192,7 @@ class UserKeyLink(Base):
     
     @classmethod
     def user_return_key(self, key):
+        ''' Returned key by object '''
 
         logger.info('Starting returned Key..')
         
@@ -225,8 +236,6 @@ ukl2 = UserKeyLink.user_get_key(user3, key3)
 
 ukl3 = UserKeyLink.user_return_key(key2)
 ukl3 = UserKeyLink.user_get_key(user2, key2)
-
-
 
 print "READY TO WORK"
 import pdb;pdb.set_trace()
