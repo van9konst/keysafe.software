@@ -76,36 +76,63 @@ class User(Base):
 
             session.add(new_user)
             session.commit()
-            logger.info("SUCCESS! Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
+            logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
             return {'firstname': firstname, 'lastname': lastname, 'rfid': rfid}
         except exc.SQLAlchemyError as e:
             logger.info("User not created with error: %s", e)
             raise Exception('User not created with error:{0}'.format(e))
 
     @classmethod
-    def user_delete(self, user):
+    @dbsession
+    def user_delete(self, user, session):
         ''' Delete user by object user '''
-        
+
         logger.info('Start deleting user..')
-        
+
         try:
-            sess.delete(user)
-            sess.commit()
-            logger.info("SUCCESS! user deleted.")
+            session.delete(user)
+            session.commit()
+            logger.info("User deleted.")
         except exc.SQLAlchemyError as e:
-            logger.info("ERROR!User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
+            logger.info("User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
+            raise Exception('User not created with error:{0}'.format(e))
 
     @classmethod
-    def user_get_by_rfid(self, rfid):
+    @dbsession
+    def user_get_by_rfid(self, rfid, session):
         ''' Get user by str(rfid) '''
-        
+
         logger.info('Start getting user by rfid..')
 
         try:
-            user = sess.query(User).filter(User.rfid_c==rfid).first()
+            user = session.query(User).filter(User.rfid_c==rfid).first()
         except exc.SQLAlchemyError as e:
-            logger.info("ERROR!Can't get user by RFID:'%s'", rfid)
-        return user
+            logger.info("Can't get user by RFID:'%s'", rfid)
+            raise Exception('Cant get user by RFID:{0}'.format(e))
+        if user:
+            return {'id': user.id, 'firstname': user.firstname, 'lastname': user.lastname, 'rfid': user.rfid_c, 'user_object': user}
+        else:
+            raise IOError('WARNING!User with card: {0} not found!'.format(rfid))
+
+    @classmethod
+    @dbsession
+    def user_get_all(self, session):
+        ''' Get all users objects '''
+        
+        logger.info('Start getting all users..')
+        try:
+            users = session.query(User).filter().all()
+        except exc.SQLAlchemyError as e:
+            logger.info("Can't get users. {0}".format(e))
+            raise Exception("Can't get users {0}".format(e))
+        if users:
+            users_dict = {}
+            for user in users:
+                users_dict[user.id] = {'firstname': user.firstname, 'lastname': user.lastname, 'rfid': user.rfid_c, 'user_object': user}
+            return users_dict
+        else:
+            raise IOError('WARNING!Users not found')
+        
 
     def __repr__(self):
         return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}>'.format(User, self)
