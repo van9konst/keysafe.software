@@ -18,16 +18,41 @@ sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
 
 in postgresql.conf setup:
-client_encoding = utf8
 ```
 
-### Create a database and user
+### Setup database by make file
 
 ```
-psql -d postgres
-CREATE DATABASE cad_keysafe;
-CREATE USER cad_root WITH PASSWORD 'root_pass';
-GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_root;
+virtualenv venv
+./makedb.sh
+pip install -r requirements/requirements_db.txt
+python database/createdb.py
+```
+
+### or Create a database and user from psql
+
+```
+psql
+=#CREATE DATABASE cad_keysafe;
+=#CREATE USER cad_root WITH PASSWORD 'root_pass';
+=#GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_root;
+virtualenv venv
+pip install -r requirements/requirements_db.txt
+python database/createdb.py
+```
+
+### Check created database:
+```
+psql -d cad_keysafe
+cad_keysafe=# \dt
+ Schema |     Name      | Type  |  Owner   
+--------+---------------+-------+----------
+ public | key           | table | cad_root
+ public | user          | table | cad_root
+ public | user_key_link | table | cad_root
+ 
+if you see this shit, all is ok! :smiley:
+
 ```
 
 ### TODO:
