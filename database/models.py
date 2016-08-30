@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
 from sqlalchemy.exc import InvalidRequestError
 import logging
+from functools import wraps
 
 
 logging.basicConfig(level=logging.INFO)
@@ -17,11 +18,33 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 # connect to db
-engine = create_engine('postgresql://cad_root:root_pass@localhost:5432/cad_keysafe')
+engine = create_engine('postgresql://cad_root:root_pass@localhost:5432/cad_keysafe', client_encoding='utf8')
 
 session = sessionmaker()
 session.configure(bind=engine)
-sess = session()
+
+def dbsession(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        result = {'data': None, 'errors': None, 'warnings': None}
+        sess = session()
+        logger.info('Seesion started..')
+        try:
+            result['data'] = f(*args, session=sess, **kwargs)
+        except Exception as e:
+            sess.rollback()
+            if 'WARNING' in e.message:
+                result['warnings'] = e
+                logger.info('{0}'.format(e))
+            else:
+                result['errors'] = e
+                logger.info('{0}'.format(e))
+        finally:
+            sess.close()
+            logger.info('Session closed!')
+        return result
+    return wrapped
+
 
 class User(Base):
 
@@ -37,23 +60,30 @@ class User(Base):
         self.lastname = lastname
         self.rfid_c = rfid_c
 
-    @classmethod
-    def new(self, firstname, lastname, rfid):
-        ''' Create user by str(firstname), str(lastname), str(rfid) '''
-        
-        logger.info('Start creating new user..')
-        
-        new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
-        
-        try:
-            sess.add(new_user)
-            sess.commit()
-            logger.info("SUCCESS! Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
-        except exc.SQLAlchemyError as e:
-            logger.info("User not created with error:%s", e)
     
     @classmethod
-    def delete(self, user):
+    @dbsession
+    def user_new(self, firstname, lastname, rfid, session):
+        ''' Create user by str(firstname), str(lastname), str(rfid) '''
+
+        logger.info('Start creating new user..')
+
+        try:
+            if rfid in [i.rfid_c for i in session.query(User).filter().all()]:
+                raise IOError('WARNING!User with card: {0} already exist!'.format(rfid))
+
+            new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
+
+            session.add(new_user)
+            session.commit()
+            logger.info("SUCCESS! Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
+            return {'firstname': firstname, 'lastname': lastname, 'rfid': rfid}
+        except exc.SQLAlchemyError as e:
+            logger.info("User not created with error: %s", e)
+            raise Exception('User not created with error:{0}'.format(e))
+
+    @classmethod
+    def user_delete(self, user):
         ''' Delete user by object user '''
         
         logger.info('Start deleting user..')
@@ -66,7 +96,7 @@ class User(Base):
             logger.info("ERROR!User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
 
     @classmethod
-    def get_user_by_rfid(self, rfid):
+    def user_get_by_rfid(self, rfid):
         ''' Get user by str(rfid) '''
         
         logger.info('Start getting user by rfid..')
@@ -100,11 +130,11 @@ class Key(Base):
         self.status = status
     
     @classmethod
-    def get_key_by_rfid(self, rfid):
+    def key_get_by_rfid(self, rfid):
         ''' Get key by str(rfid) '''
 
         logger.info('Start getting key by RFID..')
-        
+
         try:
             key = sess.query(Key).filter(Key.rfid_s==rfid).first()
         except exc.SQLAlchemyError as e:
@@ -113,7 +143,7 @@ class Key(Base):
         return key
         
     @classmethod
-    def get_all_keys(self):
+    def key_get_all_keys(self):
         ''' Method for getting all keys '''
 
         logger.info('Getting all keys..')
@@ -126,7 +156,7 @@ class Key(Base):
         return keys
 
     @classmethod
-    def new(self, room, rfid_s):
+    def key_new(self, room, rfid_s):
         ''' Create key, str(room), str(rfid)'''
         
         logger.info('Start creating new Key..')
@@ -140,7 +170,7 @@ class Key(Base):
             logger.info("Key not created with error:{0}").format(e)
 
     @classmethod
-    def delete(self, key):
+    def key_delete(self, key):
         ''' Delete key by object '''
         
         try:
@@ -171,7 +201,7 @@ class UserKeyLink(Base):
         self.key = key
 
     @classmethod
-    def user_get_key(self, user, key):
+    def userkeylink_get_key(self, user, key):
         ''' Get key by user and key object'''
         
         logger.info('Start getting Key..')
@@ -191,7 +221,7 @@ class UserKeyLink(Base):
             logger.info("ERROR!Some error happend when user %s take a key %s. \n --- %s", user.id , key.id, e)
     
     @classmethod
-    def user_return_key(self, key):
+    def userkeylink_return_key(self, key):
         ''' Returned key by object '''
 
         logger.info('Starting returned Key..')
@@ -214,3 +244,30 @@ class UserKeyLink(Base):
 
     def __repr__(self):
         return '( {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} )'.format(UserKeyLink, self)
+        
+
+Base.metadata.create_all(engine)
+
+# Added test data
+# key1 = Key(room="123", rfid_s="111", status=True)
+# key2 = Key(room="111", rfid_s="444", status=True)
+# key3 = Key(room="222", rfid_s="888", status=True)
+# user1 = User(firstname="John", lastname="Johnson", rfid_c="222")
+# user2 = User(firstname="Harry", lastname="Potter", rfid_c="333")
+# user3 = User(firstname="John", lastname="Cena", rfid_c="555")
+# user4 = User(firstname="Piter", lastname="Piterson", rfid_c="666")
+
+# sess.add_all([key1, key2, key3, user1, user2, user3, user4])
+
+# sess.commit()
+# #engine.dispose()
+
+# ukl1 = UserKeyLink.user_get_key(user2, key2)
+# ukl2 = UserKeyLink.user_get_key(user3, key3)
+
+# ukl3 = UserKeyLink.user_return_key(key2)
+# ukl3 = UserKeyLink.user_get_key(user2, key2)
+
+import pdb;pdb.set_trace()
+
+print "READY TO WORK"

@@ -16,6 +16,9 @@ $ sudo apt-get install python-qt4 pyqt4-dev-tools qt4-designer
 ```
 sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
+
+in postgresql.conf setup:
+client_encoding = utf8
 ```
 
 ### Create a database and user
