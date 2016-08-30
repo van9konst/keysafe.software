@@ -1,10 +1,10 @@
 from PyQt4 import QtGui
 
-from Design import GetKeyWindow
-from AdminForm.adminForm import AdminForm
+from design import get_key_design
+from admin_form.admin_form_model import AdminForm
 
 
-class GetKeyWindow(QtGui.QMainWindow, GetKeyWindow.Ui_GetKeyWindow):
+class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
