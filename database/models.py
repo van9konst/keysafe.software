@@ -285,11 +285,11 @@ class UserKeyLink(Base):
             logger.info('Key from room:%s returned!', key.room)
             return relation
         except (exc.SQLAlchemyError, InvalidRequestError) as e:
-            logger.info("Some error happend when key id:%s returned \n --- %s", key.id, e)
+            logger.info("Some error happend when key id:%s returned %s", key.id, e)
             raise Exception('Some error happend when key returned:{0}'.format(e))
 
     def __repr__(self):
-        return '( {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} )'.format(UserKeyLink, self)
+        return '< {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format(UserKeyLink, self)
         
 
 Base.metadata.create_all(engine)
