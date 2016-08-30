@@ -290,8 +290,4 @@ class UserKeyLink(Base):
 
     def __repr__(self):
         return '< {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format(UserKeyLink, self)
-        
 
-Base.metadata.create_all(engine)
-
-print "READY TO WORK"
