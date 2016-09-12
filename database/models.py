@@ -159,11 +159,26 @@ class Key(Base):
             key = session.query(Key).filter(Key.rfid_s == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("Cant get key by rfid: %s , %s", rfid, e)
-            raise Exception('Cant get key by RFID:{0}'.format(e))
+            raise Exception('Cant get key by RFID. Error:{0}'.format(e))
         if key:
             return key
         else:
             raise IOError('WARNING!Key by RFID:{0} not found'.format(rfid))
+
+    @classmethod
+    @dbsession
+    def key_get_available(self, session):
+        logger.info("Start getting available keys..")
+
+        try:
+            keys = session.query(Key).filter(Key.status == True).all()
+        except exc.SQLAlchemyError as e:
+            logger.info("Can't get available keys")
+            raise Exception("Can't get available keys.Error:{0}".format(e))
+        if keys:
+            return keys
+        else:
+            raise IOError("WARNING!Can't find available keys")
 
     @classmethod
     @dbsession
