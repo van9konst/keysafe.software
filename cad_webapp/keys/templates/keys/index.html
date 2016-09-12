@@ -1,7 +1,7 @@
 {% load twitter_bootstrap %}
 <html>
 <head>
-  <title>Office Map</title>
+  <title>Статистика ключів на кафедрі</title>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
   <link href="https://fonts.googleapis.com/css?family=Inconsolata&subset=latin,cyrillic" rel="stylesheet" type="text/css">
@@ -10,23 +10,80 @@
   <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{% url 'main' %}">Office Map</a>
+      <a class="navbar-brand" href="{% url 'main' %}">Статистика ключів на кафедрі</a>
     </div>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
       <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
   </div>
-</nav>
-
-  <div class="content container">
+  </nav>
+  
+  <div class="container">
     <div class="row">
-      <div class="col-md-8">
-        
+      <div class="col-md-6">
+        <div class="panel panel-success">
+          <div class="panel-heading"><h2>Вільні кімнати</h2></div>
+            <table class="table">
+                  <thead>
+                        <tr>
+                          <th>Кімната</th>
+                          <th>Поверх</th>
+                        </tr>
+                    </thead>
+                  <tbody>
+                      <tr>
+                        <td>Ключ 1</td>
+                        <td>Поверх 1</td>
+                      </tr>
+                  </tbody>
+            </table>
+        </div>
+      </div>
+      <div class="col-md-6"><span class="pull-right"></span>
+        <div class="panel panel-danger">
+          <div class="panel-heading"><h2>Зайняті кімнати</h2></div>
+          <table class="table">
+                  <thead>
+                        <tr>
+                          <th>Кімната</th>
+                          <th>Зайнята</th>
+                          <th>Ключ узято</th>
+                        </tr>
+                    </thead>
+                  <tbody>
+                      <tr>
+                        <td>Ключ 1</td>
+                        <td>Петро Петренко</td>
+                        <td>10.10.2014 14:00</td>
+                      </tr>
+                  </tbody>
+            </table>
+        </div>
       </div>
     </div>
+  <div class="panel panel-info">
+      <div class="panel-heading"><h2>Історія</h2></div>
+      <table class="table">
+                  <thead>
+                        <tr>
+                          <th>Кімната</th>
+                          <th>Була зайнята</th>
+                          <th>Ключ узято</th>
+                          <th>Ключ повернуто</th>
+                        </tr>
+                    </thead>
+                  <tbody>
+                      <tr>
+                        <td>Ключ 1</td>
+                        <td>Петро Петренко</td>
+                        <td>10.10.2014 14:00</td>
+                        <td>10.10.2014 16:00</td>
+                      </tr>
+                  </tbody>
+        </table>
   </div>
-
+  </div>
 
 </body>
 </html>
