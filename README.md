@@ -20,7 +20,7 @@ sudo apt-get install postgresql postgresql-contrib
 in postgresql.conf setup:
 ```
 
-### Setup database by make file
+### Setup database by make file(old way,need renew)
 
 ```
 virtualenv venv
@@ -32,10 +32,11 @@ python database/createdb.py
 ### or Create a database and user from psql
 
 ```
-psql
+sudo -u postgres psql
 =#CREATE DATABASE cad_keysafe;
 =#CREATE USER cad_root WITH PASSWORD 'root_pass';
 =#GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_root;
+
 virtualenv venv
 pip install -r requirements/requirements_db.txt
 python database/createdb.py
@@ -43,7 +44,7 @@ python database/createdb.py
 
 ### Check created database:
 ```
-psql -d cad_keysafe
+sudo -u postgres psql -d cad_keysafe
 cad_keysafe=# \dt
  Schema |     Name      | Type  |  Owner   
 --------+---------------+-------+----------
