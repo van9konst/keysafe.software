@@ -137,11 +137,6 @@ class Key(Base):
     room = Column(String(50))
     rfid_s = Column(String(50), unique=True)
     status = Column(Boolean, default=True)
-    users = relationship(
-        User,
-        lazy='subquery',
-        secondary='user_key_link',
-    )
 
     def __init__(self, room, rfid_s, status):
         self.room = room
@@ -247,7 +242,7 @@ class Key(Base):
             raise Exception('Key not deleted with error:{0}'.format(e))
 
     def __repr__(self):
-        return '<{0}: {1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} >'.format('KeyObject', self)
+        return '<{0}: {1.room!r}:{1.rfid_s!r}:{1.status!r} >'.format('KeyObject', self)
 
 
 class UserKeyLink(Base):
@@ -276,7 +271,7 @@ class UserKeyLink(Base):
             key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
 
             if key.status is False:
-                logger.info('Sorry, but key from room:%s already taken by user:%s', key.room, key.users[-1].lastname)
+                #logger.info('Sorry, but key from room:%s already taken by user:%s', key.room, key.users[-1].lastname)
                 raise IOError('WARNING!Key already taken !')
 
             new_get = UserKeyLink(user=user, key=key)
@@ -306,11 +301,11 @@ class UserKeyLink(Base):
                 raise IOError('WARNING!Key already returned!')
             
             # get last taked element
-            relation = session.query(UserKeyLink).filter(UserKeyLink.key == key).first()
+            relation = session.query(UserKeyLink).filter(UserKeyLink.key == key, UserKeyLink.date_returned == None).first()
             # set date taken and key new status
             relation.date_returned = datetime.datetime.utcnow()
             key.status = True
-            
+
             session.add(relation)
             session.add(key)
             logger.info('Key from room:%s returned!', key.room)
