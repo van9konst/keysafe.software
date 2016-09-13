@@ -127,7 +127,7 @@ class User(Base):
             raise IOError('WARNING!Users not found')
 
     def __repr__(self):
-        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}>'.format(User, self)
+        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}>'.format('UserObject', self)
 
 
 class Key(Base):
@@ -140,7 +140,8 @@ class Key(Base):
     status = Column(Boolean, default=True)
     users = relationship(
         User,
-        secondary='user_key_link'
+        lazy='subquery',
+        secondary='user_key_link',
     )
 
     def __init__(self, room, rfid_s, status):
@@ -179,10 +180,25 @@ class Key(Base):
             return keys
         else:
             raise IOError("WARNING!Can't find available keys")
+    
+    @classmethod
+    @dbsession
+    def key_get_taken(self, session):
+        logger.info("Start getting taken keys..")
+
+        try:
+            keys = session.query(Key).filter(Key.status == False).all()
+        except exc.SQLAlchemyError as e:
+            logger.info("Can't get taken keys")
+            raise Exception("Can't get taken keys.Error:{0}".format(e))
+        if keys:
+            return keys
+        else:
+            raise IOError("WARNING!Can't find taken keys")
 
     @classmethod
     @dbsession
-    def key_get_all_keys(self, session):
+    def key_get_all(self, session):
         ''' Method for getting all keys '''
 
         logger.info('Getting all keys..')
@@ -234,7 +250,7 @@ class Key(Base):
             raise Exception('Key not deleted with error:{0}'.format(e))
 
     def __repr__(self):
-        return '< {0}:{1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} >'.format(Key, self)
+        return '<{0}:{1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} >'.format('KeyObject', self)
 
 
 class UserKeyLink(Base):
@@ -246,8 +262,8 @@ class UserKeyLink(Base):
     key_id = Column(Integer, ForeignKey('key.id'))
     date_taked = Column(DateTime, default=datetime.datetime.utcnow)
     date_returned = Column(DateTime, nullable=True)
-    user = relationship(User)
-    key = relationship(Key)
+    user = relationship(User, lazy='subquery')
+    key = relationship(Key, lazy='subquery')
 
     def __init__(self, user, key):
         self.user = user
@@ -298,6 +314,21 @@ class UserKeyLink(Base):
         except (exc.SQLAlchemyError, InvalidRequestError) as e:
             logger.info("Some error happend when key id:%s returned %s", key.id, e)
             raise Exception('Some error happend when key returned:{0}'.format(e))
+            
+    @classmethod
+    @dbsession
+    def userkeylink_get_data(self, session):
+        ''' Returned data '''
+
+        logger.info('Starting returned data..')
+
+        try:
+            data = session.query(UserKeyLink).filter().all()
+            logger.info("Data was returned!")
+            return data
+        except (exc.SQLAlchemyError, InvalidRequestError) as e:
+            logger.info("Error happendreturning data")
+            raise Exception('Error happendreturning data:{0}'.format(e))
 
     def __repr__(self):
-        return '< {0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format(UserKeyLink, self)
+        return '<{0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)
