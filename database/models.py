@@ -16,7 +16,7 @@ Base = declarative_base()
 # connect to db
 engine = create_engine('postgresql://cad_root:root_pass@localhost:5432/cad_keysafe', client_encoding='utf8')
 
-session = sessionmaker()
+session = sessionmaker(expire_on_commit=False)
 session.configure(bind=engine)
 
 
@@ -28,14 +28,16 @@ def dbsession(f):
         logger.info('Seesion started..')
         try:
             result['data'] = f(*args, session=sess, **kwargs)
+            sess.commit()
         except Exception as e:
             sess.rollback()
+            sess.expunge_all()
             if 'WARNING' in e.message:
                 result['warnings'] = e
-                logger.info('{0}'.format(e))
+                logger.info('Warning:{0}'.format(e))
             else:
                 result['errors'] = e
-                logger.info('{0}'.format(e))
+                logger.info('Error:{0}'.format(e))
         finally:
             sess.close()
             logger.info('Session closed!')
@@ -67,11 +69,9 @@ class User(Base):
         try:
             if rfid in [i.rfid_c for i in session.query(User).filter().all()]:
                 raise IOError('WARNING!User with card: {0} already exist!'.format(rfid))
-
             new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
 
             session.add(new_user)
-            session.commit()
             logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
             return session.query(User).filter(User.rfid_c == rfid).first()
         except exc.SQLAlchemyError as e:
@@ -87,7 +87,6 @@ class User(Base):
 
         try:
             session.delete(user)
-            session.commit()
             logger.info("User deleted.")
         except exc.SQLAlchemyError as e:
             logger.info("User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
@@ -227,7 +226,6 @@ class Key(Base):
             new_key = Key(room=room, rfid_s=rfid, status=True)
 
             session.add(new_key)
-            session.commit()
             logger.info("Created key for room:{0}, with RFID:{1}".format(room, rfid))
             return session.query(Key).filter(Key.rfid_s == rfid).first()
         except exc.SQLAlchemyError as e:
@@ -243,14 +241,13 @@ class Key(Base):
 
         try:
             session.delete(key)
-            session.commit()
             logger.info("Key deleted.")
         except exc.SQLAlchemyError as e:
             logger.info("Key DO NOT deleted from room:%s with RFID:%s", key.room, key.rfid_s)
             raise Exception('Key not deleted with error:{0}'.format(e))
 
     def __repr__(self):
-        return '<{0}:{1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} >'.format('KeyObject', self)
+        return '<{0}: {1.room!r}:{1.rfid_s!r}:{1.status!r}:{1.users!r} >'.format('KeyObject', self)
 
 
 class UserKeyLink(Base):
@@ -258,8 +255,8 @@ class UserKeyLink(Base):
     __tablename__ = 'user_key_link'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    key_id = Column(Integer, ForeignKey('key.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), primary_key=False)
+    key_id = Column(Integer, ForeignKey('key.id'), primary_key=False)
     date_taked = Column(DateTime, default=datetime.datetime.utcnow)
     date_returned = Column(DateTime, nullable=True)
     user = relationship(User, lazy='subquery')
@@ -271,20 +268,22 @@ class UserKeyLink(Base):
 
     @classmethod
     @dbsession
-    def userkeylink_get_key(self, user, key, session):
+    def userkeylink_get_key(self, user, key_rfid, session):
         ''' Get key by user and key object'''
 
         logger.info('Start getting Key..')
-
-        if key.status is False:
-            logger.info('Sorry, but key from room:%s already taken by user:%s', key.room, key.users[-1].lastname)
-            raise IOError('WARNING!Key already taken !')
-
         try:
+            key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
+
+            if key.status is False:
+                logger.info('Sorry, but key from room:%s already taken by user:%s', key.room, key.users[-1].lastname)
+                raise IOError('WARNING!Key already taken !')
+
             new_get = UserKeyLink(user=user, key=key)
-            session.add(new_get)
             key.status = False
-            session.commit()
+            
+            session.add(new_get)
+            session.add(key)
             logger.info('User: %s with RFID:%s get key from room:%s with RFID:%s',
                         user.lastname, user.rfid_c, key.room, key.rfid_s)
             return new_get
@@ -294,21 +293,26 @@ class UserKeyLink(Base):
 
     @classmethod
     @dbsession
-    def userkeylink_return_key(self, key, session):
+    def userkeylink_return_key(self, key_rfid, session):
         ''' Returned key by object '''
 
         logger.info('Starting returned Key..')
-
-        if key.status is True:
-            logger.info('Key from room:%s already returned!', key.room)
-            raise IOError('WARNING!Key already returned !')
-
+        
         try:
+            key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
+
+            if key.status is True:
+                logger.info('Key from room:%s already returned!', key.room)
+                raise IOError('WARNING!Key already returned!')
+            
+            # get last taked element
             relation = session.query(UserKeyLink).filter(UserKeyLink.key == key).first()
+            # set date taken and key new status
             relation.date_returned = datetime.datetime.utcnow()
             key.status = True
+            
             session.add(relation)
-            session.commit()
+            session.add(key)
             logger.info('Key from room:%s returned!', key.room)
             return relation
         except (exc.SQLAlchemyError, InvalidRequestError) as e:
@@ -327,8 +331,8 @@ class UserKeyLink(Base):
             logger.info("Data was returned!")
             return data
         except (exc.SQLAlchemyError, InvalidRequestError) as e:
-            logger.info("Error happendreturning data")
-            raise Exception('Error happendreturning data:{0}'.format(e))
+            logger.info("Error happend returning data")
+            raise Exception('Error happend returning data:{0}'.format(e))
 
     def __repr__(self):
-        return '<{0}:{1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)
+        return '<{0}: {1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)

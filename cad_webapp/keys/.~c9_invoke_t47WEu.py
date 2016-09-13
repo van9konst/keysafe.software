@@ -27,10 +27,9 @@ def get_data_from_db():
 
 class MyView(View):
     def get(self, request):
-        try:
+        екн
             get_data_from_db()
             return render(request, 'keys/index.html', {'available': available,
                                                        'taken': taken,
                                                        'history': history})
-        except:
-            return render(request, 'keys/not_found.html')
+        e

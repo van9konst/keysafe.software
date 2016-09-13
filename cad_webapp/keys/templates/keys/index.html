@@ -7,6 +7,7 @@
         <div class="panel panel-success">
           <div class="panel-heading"><h2>Вільні кімнати</h2></div>
             <table class="table">
+                  {% if available %}
                   <thead>
                         <tr>
                           <th>Кімната</th>
@@ -21,6 +22,9 @@
                       </tr>
                       {% endfor %}
                   </tbody>
+                  {% else %}
+                      <div class="panel-body"><center>Немає вільних кімнат</center></div>
+                  {% endif %}
             </table>
         </div>
       </div>
@@ -28,22 +32,26 @@
         <div class="panel panel-danger">
           <div class="panel-heading"><h2>Зайняті кімнати</h2></div>
           <table class="table">
-                  <thead>
+                      {% if taken %}
+                      <thead>
                         <tr>
                           <th>Кімната</th>
                           <th>Зайнята</th>
                           <th>Ключ узято</th>
                         </tr>
-                    </thead>
-                  <tbody>
-                      {% for item in taken %}
-                      <tr>
-                        <td>{{ item.key.room }}</td>
-                        <td>{{ item.date_taked|date:'Y-m-d H:i' }}</td>
-                        <td> {{ item.user.firstname }} {{ item.user.lastname }}</td>
-                      </tr>
-                      {% endfor %}
-                  </tbody>
+                      </thead>
+                      <tbody>
+                        {% for item in taken %}
+                        <tr>
+                          <td>{{ item.key.room }}</td>
+                          <td>{{ item.date_taked|date:'H:i d-m-Y' }}</td>
+                          <td> {{ item.user.firstname }} {{ item.user.lastname }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                      {% else %}
+                        <div class="panel-body"><center>Всі кімнати вільні</center></div>
+                      {% endif %}
             </table>
         </div>
       </div>
@@ -64,8 +72,8 @@
                       <tr>
                         <td>{{ item.key.room }}</td>
                         <td> {{ item.user.firstname }} {{ item.user.lastname }}</td>
-                        <td>{{ item.date_taked|date:'Y-m-d H:i' }}</td>
-                        <td>{{ item.date_returned|date:'Y-m-d H:i'}}</td>
+                        <td>{{ item.date_taked|date:'H:i d-m-Y' }}</td>
+                        <td>{{ item.date_returned|date:'H:i d-m-Y' }}</td>
                       </tr>
                       {% endfor %}
                   </tbody>
