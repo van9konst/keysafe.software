@@ -1,12 +1,16 @@
 # keysafe.software
 
+```
+git clone https://github.com/VolVoz/keysafe.software.git
+```
+
 ## For OS X
 
 ```
 $ brew install pyqt
 ```
 
-## For Ubuntu/Debian
+## For Ubuntu
 
 ```
 $ sudo apt-get install python-qt4 pyqt4-dev-tools qt4-designer
@@ -40,6 +44,35 @@ sudo -u postgres psql
 virtualenv venv
 pip install -r requirements/requirements_db.txt
 python database/createdb.py
+```
+
+## For Debian/Raspbian
+
+```
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib libpq-dev python-dev
+```
+
+#### Install pyenv
+```
+git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+#### Update pyenv and install python 2.7.11
+```
+sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils
+pyenv install 2.7.11
+pyenv global 2.7.11
+```
+
+#### Install requirements
+```
+pip install --upgrade pip
+pip install -r requirements/requirements.txt
 ```
 
 ### Check created database:
