@@ -16,4 +16,4 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
         self.close()
 
     def open_settings_menu(self):
-        self.adminForm.showFullScreen()
+        self.adminForm.show()
