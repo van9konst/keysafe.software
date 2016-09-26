@@ -23,15 +23,15 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_ReadKeyWindow(object):
-    def setupUi(self, ReadKeyWindow):
-        ReadKeyWindow.setObjectName(_fromUtf8("ReadKeyWindow"))
-        ReadKeyWindow.resize(640, 480)
-        self.ReadKeyFormWidget = QtGui.QWidget(ReadKeyWindow)
-        self.ReadKeyFormWidget.setObjectName(_fromUtf8("ReadKeyFormWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.ReadKeyFormWidget)
+class Ui_WelcomeWindow(object):
+    def setupUi(self, WelcomeWindow):
+        WelcomeWindow.setObjectName(_fromUtf8("WelcomeWindow"))
+        WelcomeWindow.resize(640, 480)
+        self.WelcomeFormWidget = QtGui.QWidget(WelcomeWindow)
+        self.WelcomeFormWidget.setObjectName(_fromUtf8("WelcomeFormWidget"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.WelcomeFormWidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.horizontalGroupBox = QtGui.QGroupBox(self.ReadKeyFormWidget)
+        self.horizontalGroupBox = QtGui.QGroupBox(self.WelcomeFormWidget)
         self.horizontalGroupBox.setObjectName(_fromUtf8("horizontalGroupBox"))
         self.label_text = QtGui.QLabel(self.horizontalGroupBox)
         self.label_text.setGeometry(QtCore.QRect(170, 100, 301, 156))
@@ -40,13 +40,12 @@ class Ui_ReadKeyWindow(object):
         self.label.setGeometry(QtCore.QRect(20, 230, 591, 71))
         self.label.setObjectName(_fromUtf8("label"))
         self.verticalLayout.addWidget(self.horizontalGroupBox)
-        ReadKeyWindow.setCentralWidget(self.ReadKeyFormWidget)
+        WelcomeWindow.setCentralWidget(self.WelcomeFormWidget)
 
-        self.retranslateUi(ReadKeyWindow)
-        QtCore.QMetaObject.connectSlotsByName(ReadKeyWindow)
+        self.retranslateUi(WelcomeWindow)
+        QtCore.QMetaObject.connectSlotsByName(WelcomeWindow)
 
-    def retranslateUi(self, ReadKeyWindow):
-        ReadKeyWindow.setWindowTitle(_translate("ReadKeyWindow", "MainWindow", None))
-        self.label_text.setText(_translate("ReadKeyWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ВІТАЮ ! </span></p><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ВИ УВІЙШЛИ ЯК </span></p></body></html>", None))
-        self.label.setText(_translate("ReadKeyWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">username</span></p></body></html>", None))
-
+    def retranslateUi(self, WelcomeWindow):
+        WelcomeWindow.setWindowTitle(_translate("WelcomeWindow", "MainWindow", None))
+        self.label_text.setText(_translate("WelcomeWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ВІТАЮ ! </span></p><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ВИ УВІЙШЛИ ЯК </span></p></body></html>", None))
+        self.label.setText(_translate("WelcomeWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">username</span></p></body></html>", None))
