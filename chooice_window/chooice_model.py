@@ -1,20 +1,20 @@
+# -*- coding: utf-8 -*-
+
 from PyQt4 import QtGui
 
-import os
-import sys
-
-keysafe_dir = os.path.expanduser("~/keysafe.software")
-sys.path.append(keysafe_dir)
 from design import chooice
 
 class ChooiceWindow(QtGui.QMainWindow, chooice.Ui_ChooiceWindow):
-    def __init__(self):
+    def __init__(self, label_text=None):
         super(self.__class__, self).__init__()
         self.setupUi(self)
-        self.no.clicked.connect(self.exit)
+        self.label_text= "text"
+        self.label.setText('<html><head/><body><p align="center"><span style="font-size:24pt;font-weight:600;">{}</span></p> </body></html>'.format(label_text))
+        self.yes.clicked.connect(self.press_yes)
+        self.no.clicked.connect(self.press_no)
 
-    def exit(self):
+    def press_no(self):
         self.close()
 
-    def open_chooice(self):
-        self.get_keys_window.show()
+    def press_yes(self):
+        self.close()

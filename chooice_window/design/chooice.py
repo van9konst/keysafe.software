@@ -55,9 +55,6 @@ class Ui_ChooiceWindow(object):
 "<p align=\"center\">\n"
 "<span style=\" font-size:24pt; font-weight:600;\">ТЕКСТ</span>\n"
 "</p>\n"
-"<p align=\"center\">\n"
-"<span style=\" font-size:24pt; font-weight:600;\">name</span>\n"
-"</p>\n"
 "</body></html>", None))
         self.yes.setText(_translate("ChooiceWindow", "ТАК", None))
         self.no.setText(_translate("ChooiceWindow", "НІ", None))
