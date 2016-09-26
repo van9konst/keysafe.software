@@ -31,9 +31,8 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def open_welcome_window(self, sleep):
         self.welcome = WelcomeWindow(label_text="Volodymyr Vozniak")
         self.welcome.show()
-        aa = 11
         gevent.sleep(sleep)
-        #self.welcome.close_welcome_window()
+        self.welcome.close_welcome_window()
         print "Window closed"
 
     def get_key_window(self):
@@ -41,7 +40,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-        thread1 = Greenlet.spawn(self.open_welcome_window, 6)
+        thread1 = Greenlet.spawn(self.open_welcome_window, 3)
         thread2 = Greenlet.spawn(self.get_key_window)
         threads = [thread1, thread2]
         gevent.joinall(threads)
