@@ -25,7 +25,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-        self.get_keys_window.showFullScreen()
+        self.get_keys_window.show()
 
     def put_the_keys(self):
         # TODO: Add a window for put keys
@@ -35,10 +35,9 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 def main():
     app = QtGui.QApplication(sys.argv)
     form = MainFirstWindow()
-    form.showFullScreen()
+    form.show()
     app.exec_()
 
 
 if __name__ == '__main__':
     main()
-

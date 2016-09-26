@@ -14,7 +14,7 @@ class AdminForm(QtGui.QMainWindow, admin_form_design.Ui_AdminFormMain):
         self.exit_to_main.clicked.connect(self.exit)
 
     def register_user(self):
-        self.add_new_user_window.showFullScreen()
+        self.add_new_user_window.show()
 
     def exit(self):
         self.close()

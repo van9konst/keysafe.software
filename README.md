@@ -46,12 +46,12 @@ python database/createdb.py
 ```
 sudo -u postgres psql -d cad_keysafe
 cad_keysafe=# \dt
- Schema |     Name      | Type  |  Owner   
+ Schema |     Name      | Type  |  Owner
 --------+---------------+-------+----------
  public | key           | table | cad_root
  public | user          | table | cad_root
  public | user_key_link | table | cad_root
- 
+
 if you see this shit, all is ok! :smiley:
 
 ```
