@@ -1,7 +1,9 @@
 import sys
-
+import os
 from PyQt4 import QtGui
 
+keysafe_dir = os.path.expanduser("~/keysafe.software")
+sys.path.append(keysafe_dir)
 from main.design import main_design
 from get_key.get_key_model import GetKeyWindow
 from read_card.read_card_model import ReadCardWindow
@@ -39,3 +41,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
