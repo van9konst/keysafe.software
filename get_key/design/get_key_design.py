@@ -23,7 +23,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_GetKeyWindow(object):
-    def setupUi(self, GetKeyWindow, buttons_count=None, buttons_objects=None):
+    def setupUi(self, GetKeyWindow):
         GetKeyWindow.setObjectName(_fromUtf8("GetKeyWindow"))
         GetKeyWindow.resize(640, 480)
         self.get_key_widget = QtGui.QWidget(GetKeyWindow)
@@ -31,33 +31,17 @@ class Ui_GetKeyWindow(object):
         self.verticalLayout = QtGui.QVBoxLayout(self.get_key_widget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.get_key_skroll_area = QtGui.QScrollArea(self.get_key_widget)
-        self.get_key_skroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.get_key_skroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.get_key_skroll_area.setWidgetResizable(True)
         self.get_key_skroll_area.setObjectName(_fromUtf8("get_key_skroll_area"))
-        self.scrollArseaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 599, 366))
+        self.scrollAreaWidgetContents = QtGui.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 599, 390))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-
-
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-
-        buttons = {}
-        row_count = 0
-        for i in range(17):
-            buttons[i] = QtGui.QPushButton(self.scrollAreaWidgetContents)
-            buttons[i].setFixedSize(150, 90)
-            buttons[i].setStyleSheet(_fromUtf8("background-color: #669900; font: 75 25pt \"DejaVu Sans Mono for Powerline\";"))
-            buttons[i].setText(_translate("GetKeyWindow",'ЗАЙНЯТО: ЛОБУР МИХАЙЛО', None))
-            buttons[i].setObjectName('Button%d' % i)
-            buttons[i].clicked.connect(self.buttonClicked)
-            self.gridLayout_2.addWidget(buttons[i], int(row_count % 3), int(row_count / 3))
-            row_count += 1
-
         self.get_key_skroll_area.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.get_key_skroll_area)
         self.navigate_get_key_menu = QtGui.QGroupBox(self.get_key_widget)
@@ -83,9 +67,6 @@ class Ui_GetKeyWindow(object):
         self.retranslateUi(GetKeyWindow)
         QtCore.QMetaObject.connectSlotsByName(GetKeyWindow)
 
-    def buttonClicked(self):
-        sender = self.sender()
-        print sender.objectName() , ' was pressed'
 
     def retranslateUi(self, GetKeyWindow):
         GetKeyWindow.setWindowTitle(_translate("GetKeyWindow", "MainWindow", None))

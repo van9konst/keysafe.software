@@ -4,6 +4,7 @@ from PyQt4 import QtGui
 
 from design import chooice
 
+
 class ChooiceWindow(QtGui.QMainWindow, chooice.Ui_ChooiceWindow):
     def __init__(self, label_text=None):
         super(self.__class__, self).__init__()

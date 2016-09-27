@@ -18,8 +18,8 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
-        self.get_keys_window = GetKeyWindow()
-        self.welcome = WelcomeWindow()
+        #self.get_keys_window = GetKeyWindow()
+        #self.welcome = WelcomeWindow()
         self.get_key.clicked.connect(self.get_the_keys)
 
     def authenticate_user(self):
@@ -33,13 +33,16 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         self.welcome.show()
         QtCore.QTimer.singleShot(1000, self.welcome.close)
 
-    def get_key_window(self):
+    def get_key_window(self, buttons_count):
+        self.get_keys_window = GetKeyWindow(buttons_count)
         QtCore.QTimer.singleShot(1000, self.get_keys_window.show)
+        # Time to close get_key_window
+        #QtCore.QTimer.singleShot(10000, self.get_keys_window.close)
 
     def get_the_keys(self):
         # TODO: Open window with user auth
         self.open_welcome_window("Volodymyr Vozniak")
-        self.get_key_window()
+        self.get_key_window(5)
 
     def put_the_keys(self):
         # TODO: Add a window for put keys
