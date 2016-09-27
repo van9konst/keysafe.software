@@ -18,17 +18,21 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
-        #self.get_keys_window = GetKeyWindow()
-        #self.welcome = WelcomeWindow()
         self.get_key.clicked.connect(self.get_the_keys)
 
     def authenticate_user(self):
+        self.read_card_window = ReadCardWindow()
+        self.read_card_window.show()
+        QtCore.QTimer.singleShot(2000, self.read_card_window.close)
+        for i in range(21):
+            print i
+            if i == 20:
+                return True
         # TODO: open scanning window for 30 sec
         # TODO: run scanning script
         # TODO: close after 30 second \ return bad answer \ get rights
-        return
 
-    def open_welcome_window(self, label_text):
+    def welcome_window(self, label_text):
         self.welcome = WelcomeWindow(label_text)
         self.welcome.show()
         QtCore.QTimer.singleShot(1000, self.welcome.close)
@@ -41,8 +45,13 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-        self.open_welcome_window("Volodymyr Vozniak")
-        self.get_key_window(5)
+        if self.authenticate_user():
+            self.welcome_window("Volodymyr Vozniak")
+            self.get_key_window(5)
+        else:
+            print 'Bad day motherfucker'
+            return False
+
 
     def put_the_keys(self):
         # TODO: Add a window for put keys

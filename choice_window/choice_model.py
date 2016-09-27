@@ -2,13 +2,14 @@
 
 from PyQt4 import QtGui
 
-from design import chooice
+from design import choice
 
 
-class ChooiceWindow(QtGui.QMainWindow, chooice.Ui_ChooiceWindow):
-    def __init__(self, label_text=None):
+class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
+    def __init__(self, label_text=None, click=None):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+        self.click = click
         self.label.setText('<html><head/><body><p align="center"><span style="font-size:24pt;font-weight:600;">{}</span></p> </body></html>'.format(label_text))
         self.yes.clicked.connect(self.press_yes)
         self.no.clicked.connect(self.press_no)
@@ -18,3 +19,6 @@ class ChooiceWindow(QtGui.QMainWindow, chooice.Ui_ChooiceWindow):
 
     def press_yes(self):
         self.close()
+
+
+

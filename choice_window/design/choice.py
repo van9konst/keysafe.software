@@ -23,18 +23,18 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_ChooiceWindow(object):
-    def setupUi(self, ChooiceWindow):
-        ChooiceWindow.setObjectName(_fromUtf8("ChooiceWindow"))
-        ChooiceWindow.resize(640, 480)
-        self.ChooiceFormWidget = QtGui.QWidget(ChooiceWindow)
-        self.ChooiceFormWidget.setObjectName(_fromUtf8("ChooiceFormWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.ChooiceFormWidget)
+class Ui_ChoiceWindow(object):
+    def setupUi(self, ChoiceWindow):
+        ChoiceWindow.setObjectName(_fromUtf8("ChoiceWindow"))
+        ChoiceWindow.resize(640, 480)
+        self.ChoiceFormWidget = QtGui.QWidget(ChoiceWindow)
+        self.ChoiceFormWidget.setObjectName(_fromUtf8("ChoiceFormWidget"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.ChoiceFormWidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.horizontalGroupBox = QtGui.QGroupBox(self.ChooiceFormWidget)
+        self.horizontalGroupBox = QtGui.QGroupBox(self.ChoiceFormWidget)
         self.horizontalGroupBox.setObjectName(_fromUtf8("horizontalGroupBox"))
         self.label = QtGui.QLabel(self.horizontalGroupBox)
-        self.label.setGeometry(QtCore.QRect(110, 50, 381, 151))
+        self.label.setGeometry(QtCore.QRect(80, 50, 410, 150))
         self.label.setObjectName(_fromUtf8("label"))
         self.yes = QtGui.QPushButton(self.horizontalGroupBox)
         self.yes.setGeometry(QtCore.QRect(0, 230, 291, 201))
@@ -43,18 +43,18 @@ class Ui_ChooiceWindow(object):
         self.no.setGeometry(QtCore.QRect(330, 230, 291, 201))
         self.no.setObjectName(_fromUtf8("pushButton_2"))
         self.verticalLayout.addWidget(self.horizontalGroupBox)
-        ChooiceWindow.setCentralWidget(self.ChooiceFormWidget)
+        ChoiceWindow.setCentralWidget(self.ChoiceFormWidget)
 
-        self.retranslateUi(ChooiceWindow)
-        QtCore.QMetaObject.connectSlotsByName(ChooiceWindow)
+        self.retranslateUi(ChoiceWindow)
+        QtCore.QMetaObject.connectSlotsByName(ChoiceWindow)
 
-    def retranslateUi(self, ChooiceWindow):
-        ChooiceWindow.setWindowTitle(_translate("ChooiceWindow", "MainWindow", None))
-        self.label.setText(_translate("ChooiceWindow", "<html><head/>\n"
+    def retranslateUi(self, ChoiceWindow):
+        ChoiceWindow.setWindowTitle(_translate("ChoiceWindow", "MainWindow", None))
+        self.label.setText(_translate("ChoiceWindow", "<html><head/>\n"
 "<body>\n"
 "<p align=\"center\">\n"
 "<span style=\" font-size:24pt; font-weight:600;\">ТЕКСТ</span>\n"
 "</p>\n"
 "</body></html>", None))
-        self.yes.setText(_translate("ChooiceWindow", "ТАК", None))
-        self.no.setText(_translate("ChooiceWindow", "НІ", None))
+        self.yes.setText(_translate("ChoiceWindow", "ТАК", None))
+        self.no.setText(_translate("ChoiceWindow", "НІ", None))
