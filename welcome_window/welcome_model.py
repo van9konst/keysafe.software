@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from design import welcome
+
 
 class WelcomeWindow(QtGui.QMainWindow, welcome.Ui_WelcomeWindow):
     def __init__(self, label_text=None):

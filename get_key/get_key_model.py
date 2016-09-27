@@ -17,3 +17,4 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
 
     def open_settings_menu(self):
         self.adminForm.show()
+
