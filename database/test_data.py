@@ -19,17 +19,7 @@ def create_users():
     for key in keys:
         Key.key_new(key['room'], key['rfid_s'])
 
-    user1 = User.user_get_by_rfid(users[0]['rfid_c'])['data']
-    user2 = User.user_get_by_rfid(users[1]['rfid_c'])['data']
-    user3 = User.user_get_by_rfid(users[2]['rfid_c'])['data']
-    user4 = User.user_get_by_rfid(users[3]['rfid_c'])['data']
-    user5 = User.user_get_by_rfid(users[4]['rfid_c'])['data']
-    user6 = User.user_get_by_rfid(users[5]['rfid_c'])['data']
-    key1 = Key.key_get_by_rfid(keys[0]['rfid_s'])['data']
-    key2 = Key.key_get_by_rfid(keys[1]['rfid_s'])['data']
-    key3 = Key.key_get_by_rfid(keys[2]['rfid_s'])['data']
-    key4 = Key.key_get_by_rfid(keys[3]['rfid_s'])['data']
-    key5 = Key.key_get_by_rfid(keys[4]['rfid_s'])['data']
+create_users()
 
 user1 = User.user_get_by_rfid(users[0]['rfid_c'])['data']
 user2 = User.user_get_by_rfid(users[1]['rfid_c'])['data']
@@ -51,3 +41,4 @@ UserKeyLink.userkeylink_get_key(user1, key1.rfid_s)['data']
 UserKeyLink.userkeylink_get_key(user2, key2.rfid_s)['data']
 UserKeyLink.userkeylink_get_key(user3, key3.rfid_s)['data']
 UserKeyLink.userkeylink_return_key(key2.rfid_s)['data']
+print "Done"

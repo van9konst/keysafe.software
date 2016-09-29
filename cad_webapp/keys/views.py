@@ -1,15 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views.generic import View
-
-import sys
-sys.path.append("..") # Adds higher directory to python modules path.
-
-from database.models import User, Key, UserKeyLink
+from models import Key, UserKeyLink
 
 
 class MyView(View):
-    def get(self, request):
+
+    def get(self, request, available=None, taken=None, history=None):
+
         check_history = UserKeyLink.userkeylink_get_data()
         if not check_history['errors'] or check_history['warnings']:
             history = [i for i in check_history['data'] if i.date_returned]
@@ -22,5 +19,5 @@ class MyView(View):
         if not check_available_keys['errors'] or check_available_keys['warnings']:
             available = check_available_keys['data']
         return render(request, 'keys/index.html', {'available': available,
-                                                       'taken': taken,
-                                                       'history': history})
+                                                   'taken': taken,
+                                                   'history': history})

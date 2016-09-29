@@ -42,7 +42,9 @@ pip install -r requirements/requirements.txt
 sudo -u postgres psql
 CREATE DATABASE cad_keysafe;
 CREATE USER cad_root WITH PASSWORD 'root_pass';
+CREATE USER cad_django WITH PASSWORD 'root_pass';
 GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_root;
+GRANT ALL PRIVILEGES ON DATABASE cad_keysafe to cad_django;
 
 
 python database/createdb.py
