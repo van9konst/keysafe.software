@@ -30,6 +30,7 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.user = user
+        self.admin_settings_button.setVisible(True)
         self.exit_to_main.clicked.connect(self.exit)
         self.adminForm = AdminForm()
         self.admin_settings_button.clicked.connect(self.open_settings_menu)
@@ -68,6 +69,7 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
                 taken_key = UserKeyLink.userkeylink_get_taken_key(key['data'].id)
                 if taken_key['data']:
                     print 'This key already taken by user', taken_key['data'].user.firstname, ' ', taken_key['data'].user.lastname, 'at', taken_key['data'].date_taked.strftime('%d %b %Y, %H:%M')
+        # TODO: Need return error window
 
     def exit(self):
         self.close()

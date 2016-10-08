@@ -24,10 +24,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         self.read_card_window = ReadCardWindow()
         self.read_card_window.show()
         QtCore.QTimer.singleShot(2000, self.read_card_window.close)
-        for i in range(21):
-            print i
-            if i == 20:
-                return True
+
         # TODO: open scanning window for 30 sec
         # TODO: run scanning script
         # TODO: close after 30 second \ return bad answer \ get rights
@@ -47,18 +44,18 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-        user = u'Vova'
-        #if self.authenticate_user():
-        self.welcome_window(user)
-        keys = Key.key_get_all()
-        if keys['data']:
-            self.get_key_window(keys['data'], user)
-        else:
-            return False
-            # TODO: Need return error window
-        #else:
-            #print 'Bad day motherfucker'
-            #return False
+            user = u'Vova'
+        # if self.authenticate_user():
+            self.welcome_window(user)
+            keys = Key.key_get_all()
+            if keys['data']:
+                self.get_key_window(keys['data'], user)
+            else:
+                return False
+                # TODO: Need return error window
+        # else:
+        #     print 'Bad day motherfucker'
+        #     return False
 
 
     def put_the_keys(self):
