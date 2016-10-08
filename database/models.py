@@ -25,7 +25,7 @@ def dbsession(f):
     def wrapped(*args, **kwargs):
         result = {'data': None, 'errors': None, 'warnings': None}
         sess = session()
-        logger.info('Seesion started..')
+        logger.info('Session started..')
         try:
             result['data'] = f(*args, session=sess, **kwargs)
             sess.commit()
@@ -62,7 +62,6 @@ class User(Base):
     @classmethod
     @dbsession
     def user_new(self, firstname, lastname, rfid, session):
-        ''' Create user by str(firstname), str(lastname), str(rfid) '''
 
         logger.info('Start creating new user..')
 
@@ -81,7 +80,6 @@ class User(Base):
     @classmethod
     @dbsession
     def user_delete(self, user, session):
-        ''' Delete user by object user '''
 
         logger.info('Start deleting user..')
 
@@ -95,7 +93,6 @@ class User(Base):
     @classmethod
     @dbsession
     def user_get_by_rfid(self, rfid, session):
-        ''' Get user by str(rfid) '''
 
         logger.info('Start getting user by rfid..')
 
@@ -112,7 +109,6 @@ class User(Base):
     @classmethod
     @dbsession
     def user_get_all(self, session):
-        ''' Get all users objects '''
 
         logger.info('Start getting all users..')
         try:
@@ -146,7 +142,6 @@ class Key(Base):
     @classmethod
     @dbsession
     def key_get_by_rfid(self, rfid, session):
-        ''' Get key by str(rfid) '''
 
         logger.info('Start getting key by RFID..')
 
@@ -193,7 +188,6 @@ class Key(Base):
     @classmethod
     @dbsession
     def key_get_all(self, session):
-        ''' Method for getting all keys '''
 
         logger.info('Getting all keys..')
 
@@ -210,7 +204,6 @@ class Key(Base):
     @classmethod
     @dbsession
     def key_new(self, room, rfid, session):
-        ''' Create key, str(room), str(rfid)'''
 
         logger.info('Start creating new Key..')
 
@@ -230,7 +223,6 @@ class Key(Base):
     @classmethod
     @dbsession
     def key_delete(self, key, session):
-        ''' Delete key by object '''
 
         logger.info('Start deleting key..')
 
@@ -264,14 +256,12 @@ class UserKeyLink(Base):
     @classmethod
     @dbsession
     def userkeylink_get_key(self, user, key_rfid, session):
-        ''' Get key by user and key object'''
 
         logger.info('Start getting Key..')
         try:
             key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
 
             if key.status is False:
-                #logger.info('Sorry, but key from room:%s already taken by user:%s', key.room, key.users[-1].lastname)
                 raise IOError('WARNING!Key already taken !')
 
             new_get = UserKeyLink(user=user, key=key)
@@ -289,7 +279,6 @@ class UserKeyLink(Base):
     @classmethod
     @dbsession
     def userkeylink_return_key(self, key_rfid, session):
-        ''' Returned key by object '''
 
         logger.info('Starting returned Key..')
         
@@ -300,7 +289,7 @@ class UserKeyLink(Base):
                 logger.info('Key from room:%s already returned!', key.room)
                 raise IOError('WARNING!Key already returned!')
             
-            # get last taked element
+            # get last taken element
             relation = session.query(UserKeyLink).filter(UserKeyLink.key == key, UserKeyLink.date_returned == None).first()
             # set date taken and key new status
             relation.date_returned = datetime.datetime.utcnow()
@@ -317,7 +306,6 @@ class UserKeyLink(Base):
     @classmethod
     @dbsession
     def userkeylink_get_data(self, session):
-        ''' Returned data '''
 
         logger.info('Starting returned data..')
 
@@ -329,5 +317,23 @@ class UserKeyLink(Base):
             logger.info("Error happend returning data")
             raise Exception('Error happend returning data:{0}'.format(e))
 
+    @classmethod
+    @dbsession
+    def userkeylink_get_taken_key(self, key_id, session):
+
+        logger.info('Starting returned data..')
+
+        try:
+            data = session.query(UserKeyLink).filter(UserKeyLink.date_returned == None,
+                                                     UserKeyLink.key_id == key_id).first()
+            logger.info("Data was returned!")
+            return data
+        except (exc.SQLAlchemyError, InvalidRequestError) as e:
+            logger.info("Error happend returning data")
+            raise Exception('Error happend returning data:{0}'.format(e))
+
     def __repr__(self):
         return '<{0}: {1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)
+
+
+

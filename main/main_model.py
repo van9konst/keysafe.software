@@ -35,22 +35,30 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def welcome_window(self, label_text):
         self.welcome = WelcomeWindow(label_text)
         self.welcome.show()
-        QtCore.QTimer.singleShot(1000, self.welcome.close)
+        QtCore.QTimer.singleShot(2000, self.welcome.close)
 
-    def get_key_window(self, buttons_count):
-        self.get_keys_window = GetKeyWindow(buttons_count)
-        QtCore.QTimer.singleShot(1000, self.get_keys_window.show)
+    def get_key_window(self, keys, user):
+        self.get_keys_window = GetKeyWindow(keys, user)
+
+        QtCore.QTimer.singleShot(2000, self.get_keys_window.show) # time when welcome window close and this window open
+
         # Time to close get_key_window
-        #QtCore.QTimer.singleShot(10000, self.get_keys_window.close)
+        #QtCore.QTimer.singleShot(60000, self.get_keys_window.close)
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-        if self.authenticate_user():
-            self.welcome_window("Volodymyr Vozniak")
-            self.get_key_window(5)
+        user = u'Vova'
+        #if self.authenticate_user():
+        self.welcome_window(user)
+        keys = Key.key_get_all()
+        if keys['data']:
+            self.get_key_window(keys['data'], user)
         else:
-            print 'Bad day motherfucker'
             return False
+            # TODO: Need return error window
+        #else:
+            #print 'Bad day motherfucker'
+            #return False
 
 
     def put_the_keys(self):

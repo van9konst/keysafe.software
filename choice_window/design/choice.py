@@ -17,11 +17,13 @@ except AttributeError:
 
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_ChoiceWindow(object):
     def setupUi(self, ChoiceWindow):
@@ -34,7 +36,7 @@ class Ui_ChoiceWindow(object):
         self.horizontalGroupBox = QtGui.QGroupBox(self.ChoiceFormWidget)
         self.horizontalGroupBox.setObjectName(_fromUtf8("horizontalGroupBox"))
         self.label = QtGui.QLabel(self.horizontalGroupBox)
-        self.label.setGeometry(QtCore.QRect(80, 50, 410, 150))
+        self.label.setGeometry(QtCore.QRect(15, 50, 550, 150))
         self.label.setObjectName(_fromUtf8("label"))
         self.yes = QtGui.QPushButton(self.horizontalGroupBox)
         self.yes.setGeometry(QtCore.QRect(0, 230, 291, 201))
@@ -50,11 +52,9 @@ class Ui_ChoiceWindow(object):
 
     def retranslateUi(self, ChoiceWindow):
         ChoiceWindow.setWindowTitle(_translate("ChoiceWindow", "MainWindow", None))
-        self.label.setText(_translate("ChoiceWindow", "<html><head/>\n"
-"<body>\n"
-"<p align=\"center\">\n"
-"<span style=\" font-size:24pt; font-weight:600;\">ТЕКСТ</span>\n"
-"</p>\n"
-"</body></html>", None))
         self.yes.setText(_translate("ChoiceWindow", "ТАК", None))
         self.no.setText(_translate("ChoiceWindow", "НІ", None))
+        self.yes.setStyleSheet('QPushButton {background-color: #ffffff; color: #000000;'
+                               'font: 75 50pt DejaVu Sans Mono for Powerline;}')
+        self.no.setStyleSheet('QPushButton {background-color: #ffffff; color: #000000;'
+                               'font: 75 50pt DejaVu Sans Mono for Powerline;}')
