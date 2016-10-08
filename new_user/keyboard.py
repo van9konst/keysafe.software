@@ -57,11 +57,11 @@ class SoftInputWidget(QtGui.QDialog):
 
         # alphabets
         alpha_widget_list = []
-        sym_list    = [u'Й', u'Ц', u'У', u'К', u'Е', u'Н', 'u', 'i', 'o', 'p',
+        sym_list    = [u'Й', u'Ц', u'У', u'К', u'Е', u'Н', u'Г', u'Ш', u'Щ', u'З', u'Х',
                        'new_row',
-                       'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
+                       u'Ф', u'І', u'В', u'А', u'П', u'Р', u'О', u'Л', u'Д', u'Є',
                        'new_row',
-                       'z', 'x', 'c', 'v', 'b', 'n', 'm']
+                       u'Я', u'Ч', u'С', u'М', u'И', u'Т', u'Ь', u'Б', u'Ю']
         for sym in sym_list:
             if sym == 'new_row':
                 alpha_widget_list.append('new_row')
@@ -72,27 +72,15 @@ class SoftInputWidget(QtGui.QDialog):
 
         # back space
         control_widget_list = []
-        button = MyFlatPushButton('<B')
+        button = MyFlatPushButton(u'<-')
         button.setToolTip('Backspace')
         button.KEY_CHAR = QtCore.Qt.Key_Backspace
-        control_widget_list.append(button)
-        control_widget_list.append('sep')
-
-        # tab
-        button = MyFlatPushButton('>T')
-        button.KEY_CHAR = QtCore.Qt.Key_Tab
         control_widget_list.append(button)
         control_widget_list.append('sep')
 
         # space
         button = MyFlatPushButton('SPC')
         button.KEY_CHAR = QtCore.Qt.Key_Space
-        control_widget_list.append(button)
-        control_widget_list.append('sep')
-
-        # close
-        button = MyFlatPushButton('X')
-        button.KEY_CHAR = QtCore.Qt.Key_Escape
         control_widget_list.append(button)
         control_widget_list.append('sep')
 
@@ -105,8 +93,8 @@ class SoftInputWidget(QtGui.QDialog):
         alist = list()
         alist.append((QtCore.Qt.Key_Left,  'L-A'))
         alist.append((QtCore.Qt.Key_Right, 'R-A'))
-        alist.append((QtCore.Qt.Key_Up,    'U-A'))
-        alist.append((QtCore.Qt.Key_Down,  'D-A'))
+        # alist.append((QtCore.Qt.Key_Up,    'U-A'))
+        # alist.append((QtCore.Qt.Key_Down,  'D-A'))
         for key in alist:
             button = MyFlatPushButton(key[1])
             button.KEY_CHAR = key[0]
