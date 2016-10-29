@@ -63,7 +63,7 @@ class User(Base):
 
     @classmethod
     @dbsession
-    def user_new(self, firstname, lastname, rfid, session, admin=None):
+    def user_new(self, firstname, lastname, rfid, admin, session):
 
         logger.info('Start creating new user..')
 
@@ -73,7 +73,7 @@ class User(Base):
             if admin:
                 new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid, admin=admin)
             else:
-                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
+                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid, admin=False)
             session.add(new_user)
             logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
             return session.query(User).filter(User.rfid_c == rfid).first()

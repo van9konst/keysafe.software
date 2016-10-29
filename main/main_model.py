@@ -1,8 +1,5 @@
 import sys
 import os
-import time
-import gevent
-from gevent import Greenlet
 from PyQt4 import QtGui, QtCore
 
 keysafe_dir = os.path.expanduser("~/keysafe.software")
@@ -44,9 +41,10 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-            user = u'Vova'
+            user = User.user_get_by_rfid("11111")['data']
+            #user = u'Vova'
         # if self.authenticate_user():
-            self.welcome_window(user)
+            self.welcome_window(user.firstname)
             keys = Key.key_get_all()
             if keys['data']:
                 self.get_key_window(keys['data'], user)

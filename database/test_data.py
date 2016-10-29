@@ -1,11 +1,11 @@
 from models import User, Key, UserKeyLink
 
-users = [{"firstname": "Tony", "lastname": "Stark", "rfid_c": "11111"},
-         {"firstname": "John", "lastname": "Smith", "rfid_c": "22222"},
-         {"firstname": "Frank", "lastname": "Montana", "rfid_c": "33333"},
-         {"firstname": "Gandalf", "lastname": "Gray", "rfid_c": "44444"},
-         {"firstname": "Peter", "lastname": "Parker", "rfid_c": "55555"},
-         {"firstname": "Mike", "lastname": "Sunny", "rfid_c": "66666"}]
+users = [{"firstname": "Tony", "lastname": "Stark", "rfid_c": "11111", "admin": True,},
+         {"firstname": "John", "lastname": "Smith", "rfid_c": "22222", "admin": False,},
+         {"firstname": "Frank", "lastname": "Montana", "rfid_c": "33333", "admin": False,},
+         {"firstname": "Gandalf", "lastname": "Gray", "rfid_c": "44444", "admin": True,},
+         {"firstname": "Peter", "lastname": "Parker", "rfid_c": "55555", "admin": False,},
+         {"firstname": "Mike", "lastname": "Sunny", "rfid_c": "66666", "admin": False,}]
 keys = [{"room": "311", "rfid_s": "111"},
         {"room": "11D", "rfid_s": "444"},
         {"room": "212", "rfid_s": "222"},
@@ -14,7 +14,8 @@ keys = [{"room": "311", "rfid_s": "111"},
 
 def create_users():
     for user in users:
-        User.user_new(user['firstname'], user['lastname'], user['rfid_c'])
+        import pdb;pdb.set_trace()
+        User.user_new(user['firstname'], user['lastname'], user['rfid_c'], user['admin'])
 
     for key in keys:
         Key.key_new(key['room'], key['rfid_s'])

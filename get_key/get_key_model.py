@@ -61,8 +61,10 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
         if key['data']:
             if key['data'].status is True:
                 self.choice = ChoiceWindow(
+                    operation='get_key',
                     label_text=u'Ви дійсно хочете взяти ключ від кімнати {} ?'.format(key['data'].room),
-                    user=self.user)
+                    user=self.user,
+                    key=key['data'].rfid_s)
                 self.choice.show()
                 QtCore.QTimer.singleShot(10000, self.choice.close)
             else:
