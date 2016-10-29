@@ -53,23 +53,27 @@ class User(Base):
     firstname = Column(String(50))
     lastname = Column(String(50))
     rfid_c = Column(String(50), unique=True)
+    admin = Column(Boolean, default=False)
 
-    def __init__(self, firstname, lastname, rfid_c):
+    def __init__(self, firstname, lastname, rfid_c, admin):
         self.firstname = firstname
         self.lastname = lastname
         self.rfid_c = rfid_c
+        self.admin = admin
 
     @classmethod
     @dbsession
-    def user_new(self, firstname, lastname, rfid, session):
+    def user_new(self, firstname, lastname, rfid, session, admin=None):
 
         logger.info('Start creating new user..')
 
         try:
             if rfid in [i.rfid_c for i in session.query(User).filter().all()]:
                 raise IOError('WARNING!User with card: {0} already exist!'.format(rfid))
-            new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
-
+            if admin:
+                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid, admin=admin)
+            else:
+                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid)
             session.add(new_user)
             logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
             return session.query(User).filter(User.rfid_c == rfid).first()
@@ -122,7 +126,7 @@ class User(Base):
             raise IOError('WARNING!Users not found')
 
     def __repr__(self):
-        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}>'.format('UserObject', self)
+        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}:{1.admin!r}>'.format('UserObject', self)
 
 
 class Key(Base):
