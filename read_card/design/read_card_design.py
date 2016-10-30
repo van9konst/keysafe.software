@@ -5,8 +5,11 @@
 # Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
-
+#
+import math, sys
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt, QTimer
+from PyQt4.QtGui import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -21,6 +24,49 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
+
+class Overlay(QWidget):
+
+    def __init__(self, parent = None):
+
+        QWidget.__init__(self, parent)
+        palette = QPalette(self.palette())
+        palette.setColor(palette.Background, Qt.transparent)
+        self.setPalette(palette)
+
+    def paintEvent(self, event):
+
+        painter = QPainter()
+        painter.begin(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, 127)))
+        painter.setPen(QPen(Qt.NoPen))
+
+        for i in range(6):
+            if (self.counter / 5) % 6 == i:
+                painter.setBrush(QBrush(QColor(127 + (self.counter % 5)*32, 127, 127)))
+            else:
+                painter.setBrush(QBrush(QColor(127, 127, 127)))
+            painter.drawEllipse(
+                self.width()/2 + 30 * math.cos(2 * math.pi * i / 6.0) - 10,
+                self.height()/2 + 30 * math.sin(2 * math.pi * i / 6.0) - 10,
+                20, 20)
+
+        painter.end()
+
+    def showEvent(self, event):
+
+        self.timer = self.startTimer(50)
+        self.counter = 0
+
+    def timerEvent(self, event):
+
+        self.counter += 1
+        self.update()
+        if self.counter == 200:
+            self.killTimer(self.timer)
+            self.hide()
 
 class Ui_ReadKeyWindow(object):
     def setupUi(self, ReadKeyWindow):
@@ -37,22 +83,104 @@ class Ui_ReadKeyWindow(object):
         self.label_text = QtGui.QLabel(self.horizontalGroupBox)
         self.label_text.setObjectName(_fromUtf8("label_text"))
         self.verticalLayout_2.addWidget(self.label_text)
-        self.progressBar = QtGui.QProgressBar(self.horizontalGroupBox)
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName(_fromUtf8("progressBar"))
-        self.verticalLayout_2.addWidget(self.progressBar)
         self.verticalLayout.addWidget(self.horizontalGroupBox)
-        self.exit_to_main = QtGui.QPushButton(self.ReadKeyFormWidget)
-        self.exit_to_main.setStyleSheet(_fromUtf8("font: 75 20pt \"DejaVu Sans Mono for Powerline\";"))
-        self.exit_to_main.setObjectName(_fromUtf8("exit_to_main"))
-        self.verticalLayout.addWidget(self.exit_to_main)
         ReadKeyWindow.setCentralWidget(self.ReadKeyFormWidget)
 
         self.retranslateUi(ReadKeyWindow)
         QtCore.QMetaObject.connectSlotsByName(ReadKeyWindow)
 
+        self.setCentralWidget(self.ReadKeyFormWidget)
+        self.overlay = Overlay(self.centralWidget())
+        #self.overlay.hide()
+        self.overlay.show()
+        #utton.clicked.connect(self.overlay.show)
+
+
+    def resizeEvent(self, event):
+        self.overlay.resize(event.size())
+        event.accept()
+
     def retranslateUi(self, ReadKeyWindow):
         ReadKeyWindow.setWindowTitle(_translate("ReadKeyWindow", "MainWindow", None))
         self.label_text.setText(_translate("ReadKeyWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ПІДНЕСІТЬ </span></p><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">СВОЮ КАРТУ </span></p><p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">ДЛЯ ЗЧИТУВАННЯ</span></p></body></html>", None))
-        self.exit_to_main.setText(_translate("ReadKeyWindow", "ВИХІД", None))
 
+
+
+#
+# from PyQt4.QtCore import Qt, QTimer
+# from PyQt4.QtGui import *
+#
+# class Overlay(QWidget):
+#
+#     def __init__(self, parent = None):
+#
+#         QWidget.__init__(self, parent)
+#         palette = QPalette(self.palette())
+#         palette.setColor(palette.Background, Qt.transparent)
+#         self.setPalette(palette)
+#
+#     def paintEvent(self, event):
+#
+#         painter = QPainter()
+#         painter.begin(self)
+#         painter.setRenderHint(QPainter.Antialiasing)
+#         painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, 127)))
+#         painter.setPen(QPen(Qt.NoPen))
+#
+#         for i in range(6):
+#             if (self.counter / 5) % 6 == i:
+#                 painter.setBrush(QBrush(QColor(127 + (self.counter % 5)*32, 127, 127)))
+#             else:
+#                 painter.setBrush(QBrush(QColor(127, 127, 127)))
+#             painter.drawEllipse(
+#                 self.width()/2 + 30 * math.cos(2 * math.pi * i / 6.0) - 10,
+#                 self.height()/2 + 30 * math.sin(2 * math.pi * i / 6.0) - 10,
+#                 20, 20)
+#
+#         painter.end()
+#
+#     def showEvent(self, event):
+#
+#         self.timer = self.startTimer(50)
+#         self.counter = 0
+#
+#     def timerEvent(self, event):
+#
+#         self.counter += 1
+#         self.update()
+#         if self.counter == 60:
+#             self.killTimer(self.timer)
+#             self.hide()
+#
+#
+# class MainWindow(QMainWindow):
+#
+#     def __init__(self, parent = None):
+#
+#         QMainWindow.__init__(self, parent)
+#
+#         widget = QWidget(self)
+#         self.editor = QTextEdit()
+#         self.editor.setPlainText("0123456789"*100)
+#         layout = QGridLayout(widget)
+#         layout.addWidget(self.editor, 0, 0, 1, 3)
+#         button = QPushButton("Wait")
+#         layout.addWidget(button, 1, 1, 1, 1)
+#
+#         self.setCentralWidget(widget)
+#         self.overlay = Overlay(self.centralWidget())
+#         self.overlay.hide()
+#         button.clicked.connect(self.overlay.show)
+#
+#     def resizeEvent(self, event):
+#
+#         self.overlay.resize(event.size())
+#         event.accept()
+#
+#
+# if __name__ == "__main__":
+#
+#     app = QApplication(sys.argv)
+#     window = MainWindow()
+#     window.show()
+#     sys.exit(app.exec_())

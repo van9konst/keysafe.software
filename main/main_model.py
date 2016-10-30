@@ -20,7 +20,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def authenticate_user(self):
         self.read_card_window = ReadCardWindow()
         self.read_card_window.show()
-        QtCore.QTimer.singleShot(2000, self.read_card_window.close)
+        QtCore.QTimer.singleShot(10000, self.read_card_window.close)
 
         # TODO: open scanning window for 30 sec
         # TODO: run scanning script
@@ -43,7 +43,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         # TODO: Open window with user auth
             user = User.user_get_by_rfid("11111")['data']
             #user = u'Vova'
-        # if self.authenticate_user():
+            #self.authenticate_user()
             self.welcome_window(user.firstname)
             keys = Key.key_get_all()
             if keys['data']:
