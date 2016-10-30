@@ -5,6 +5,7 @@ from PyQt4 import QtGui, QtCore
 from design import get_key_design
 from admin_form.admin_form_model import AdminForm
 from choice_window.choice_model import ChoiceWindow
+from info_window.info_model import InfoWindow
 from database.models import Key, UserKeyLink
 
 
@@ -70,8 +71,13 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
             else:
                 taken_key = UserKeyLink.userkeylink_get_taken_key(key['data'].id)
                 if taken_key['data']:
+                    taken_info = taken_key['data'].user.firstname + ' ' + taken_key['data'].user.lastname + ', ' + taken_key['data'].date_taked.strftime('%d %b %Y, %H:%M')
+                    self.info = InfoWindow(
+                        label_text=u'Ключ узяв: {}'.format(taken_info)
+                    )
+                    self.info.show()
+                    QtCore.QTimer.singleShot(10000, self.info.close)
                     print 'This key already taken by user', taken_key['data'].user.firstname, ' ', taken_key['data'].user.lastname, 'at', taken_key['data'].date_taked.strftime('%d %b %Y, %H:%M')
-        # TODO: Need return error window
 
     def exit(self):
         self.close()
