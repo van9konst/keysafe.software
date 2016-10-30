@@ -31,7 +31,8 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.user = user
-        self.admin_settings_button.setVisible(True)
+        if self.user.admin:
+            self.admin_settings_button.setVisible(True)
         self.exit_to_main.clicked.connect(self.exit)
         self.adminForm = AdminForm()
         self.admin_settings_button.clicked.connect(self.open_settings_menu)

@@ -60,6 +60,7 @@ class Ui_GetKeyWindow(object):
         self.verticalLayout.addWidget(self.navigate_get_key_menu)
         self.admin_settings_button = QtGui.QPushButton(self.get_key_widget)
         self.admin_settings_button.setEnabled(True)
+        self.admin_settings_button.setVisible(False)
         self.admin_settings_button.setStyleSheet(_fromUtf8("font: 75 20pt \"DejaVu Sans Mono for Powerline\";"))
         self.admin_settings_button.setObjectName(_fromUtf8("admin_settings_button"))
         self.verticalLayout.addWidget(self.admin_settings_button)
