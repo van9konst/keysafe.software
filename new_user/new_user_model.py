@@ -9,5 +9,8 @@ class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
         self.setupUi(self)
         self.pushButton.clicked.connect(self.exit)
 
+    def add_user_rfid_card(self):
+        pass
+
     def exit(self):
         self.close()
