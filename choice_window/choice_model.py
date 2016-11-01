@@ -22,7 +22,7 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
 
     def press_yes_get_key(self):
         try:
-            UserKeyLink.userkeylink_get_key(self.user, self.key)['data']
+            UserKeyLink.getting_key(self.user, self.key)['data']
             # TODO: run motors and magnet
         except Exception as e:
             print e

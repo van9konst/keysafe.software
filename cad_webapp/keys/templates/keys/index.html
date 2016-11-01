@@ -18,7 +18,7 @@
                       {% for key in available %}
                       <tr>
                         <td>{{ key.room }}</td>
-                        <td>{{ key.rfid_s  }}</td>
+                        <td>{{ key.rfid_chip  }}</td>
                       </tr>
                       {% endfor %}
                   </tbody>
@@ -44,7 +44,7 @@
                         {% for item in taken %}
                         <tr>
                           <td>{{ item.key.room }}</td>
-                          <td>{{ item.date_taked|date:'H:i d-m-Y' }}</td>
+                          <td>{{ item.date_taken|date:'H:i d-m-Y' }}</td>
                           <td> {{ item.user.firstname }} {{ item.user.lastname }}</td>
                         </tr>
                         {% endfor %}
@@ -72,7 +72,7 @@
                       <tr>
                         <td>{{ item.key.room }}</td>
                         <td> {{ item.user.firstname }} {{ item.user.lastname }}</td>
-                        <td>{{ item.date_taked|date:'H:i d-m-Y' }}</td>
+                        <td>{{ item.date_taken|date:'H:i d-m-Y' }}</td>
                         <td>{{ item.date_returned|date:'H:i d-m-Y' }}</td>
                       </tr>
                       {% endfor %}

@@ -41,11 +41,11 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-            user = User.user_get_by_rfid("11111")['data']
+            user = User.get_by_rfid("11111")['data']
             #user = u'Vova'
             #self.authenticate_user()
             self.welcome_window(user.firstname)
-            keys = Key.key_get_all()
+            keys = Key.get_all()
             if keys['data']:
                 self.get_key_window(keys['data'], user)
             else:

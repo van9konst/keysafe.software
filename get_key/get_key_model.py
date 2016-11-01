@@ -52,33 +52,33 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
                                                   'color: #ffffff;'
                                                   'font: 75 40pt DejaVu Sans Mono for Powerline;}')
                 buttons[key.id].setText(_translate("GetKeyWindow", str(key.room), None))
-                buttons[key.id].setObjectName(key.rfid_s)
+                buttons[key.id].setObjectName(key.rfid_chip)
                 buttons[key.id].clicked.connect(self.button_clicked)
                 self.gridLayout_2.addWidget(buttons[key.id], int(row_count % 3), int(row_count / 3))
                 row_count += 1
 
     def button_clicked(self):
         sender = self.sender()
-        key = Key.key_get_by_rfid(str(sender.objectName()))
+        key = Key.get_by_rfid(str(sender.objectName()))
         if key['data']:
             if key['data'].status is True:
                 self.choice = ChoiceWindow(
                     operation='get_key',
                     label_text=u'Ви дійсно хочете взяти ключ від кімнати {} ?'.format(key['data'].room),
                     user=self.user,
-                    key=key['data'].rfid_s)
+                    key=key['data'].rfid_chip)
                 self.choice.show()
                 QtCore.QTimer.singleShot(10000, self.choice.close)
             else:
-                taken_key = UserKeyLink.userkeylink_get_taken_key(key['data'].id)
+                taken_key = UserKeyLink.get_only_taken_keys(key['data'].id)
                 if taken_key['data']:
-                    taken_info = taken_key['data'].user.firstname + ' ' + taken_key['data'].user.lastname + ', ' + taken_key['data'].date_taked.strftime('%d %b %Y, %H:%M')
+                    taken_info = taken_key['data'].user.firstname + ' ' + taken_key['data'].user.lastname + ', ' + taken_key['data'].date_taken.strftime('%d %b %Y, %H:%M')
                     self.info = InfoWindow(
                         label_text=u'Ключ узяв: {}'.format(taken_info)
                     )
                     self.info.show()
                     QtCore.QTimer.singleShot(10000, self.info.close)
-                    print 'This key already taken by user', taken_key['data'].user.firstname, ' ', taken_key['data'].user.lastname, 'at', taken_key['data'].date_taked.strftime('%d %b %Y, %H:%M')
+                    print 'This key already taken by user', taken_key['data'].user.firstname, ' ', taken_key['data'].user.lastname, 'at', taken_key['data'].date_taken.strftime('%d %b %Y, %H:%M')
 
     def exit(self):
         self.close()

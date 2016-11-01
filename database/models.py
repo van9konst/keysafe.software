@@ -52,38 +52,38 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     firstname = Column(String(50))
     lastname = Column(String(50))
-    rfid_c = Column(String(50), unique=True)
+    rfid_card = Column(String(50), unique=True)
     admin = Column(Boolean, default=False)
 
-    def __init__(self, firstname, lastname, rfid_c, admin):
+    def __init__(self, firstname, lastname, rfid_card, admin):
         self.firstname = firstname
         self.lastname = lastname
-        self.rfid_c = rfid_c
+        self.rfid_card = rfid_card
         self.admin = admin
 
     @classmethod
     @dbsession
-    def user_new(self, firstname, lastname, rfid, admin, session):
+    def create(self, firstname, lastname, rfid, admin, session):
 
         logger.info('Start creating new user..')
 
         try:
-            if rfid in [i.rfid_c for i in session.query(User).filter().all()]:
+            if rfid in [i.rfid_card for i in session.query(User).filter().all()]:
                 raise IOError('WARNING!User with card: {0} already exist!'.format(rfid))
             if admin:
-                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid, admin=admin)
+                new_user = User(firstname=firstname, lastname=lastname, rfid_card=rfid, admin=admin)
             else:
-                new_user = User(firstname=firstname, lastname=lastname, rfid_c=rfid, admin=False)
+                new_user = User(firstname=firstname, lastname=lastname, rfid_card=rfid, admin=False)
             session.add(new_user)
             logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
-            return session.query(User).filter(User.rfid_c == rfid).first()
+            return session.query(User).filter(User.rfid_card == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("User not created with error: %s", e)
             raise Exception('User not created with error:{0}'.format(e))
 
     @classmethod
     @dbsession
-    def user_delete(self, user, session):
+    def delete(self, user, session):
 
         logger.info('Start deleting user..')
 
@@ -91,17 +91,17 @@ class User(Base):
             session.delete(user)
             logger.info("User deleted.")
         except exc.SQLAlchemyError as e:
-            logger.info("User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_c)
+            logger.info("User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_card)
             raise Exception('User not deleted with error:{0}'.format(e))
 
     @classmethod
     @dbsession
-    def user_get_by_rfid(self, rfid, session):
+    def get_by_rfid(self, rfid, session):
 
         logger.info('Start getting user by rfid..')
 
         try:
-            user = session.query(User).filter(User.rfid_c == rfid).first()
+            user = session.query(User).filter(User.rfid_card == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("Can't get user by RFID:'%s'", rfid)
             raise Exception('Cant get user by RFID:{0}'.format(e))
@@ -112,7 +112,7 @@ class User(Base):
 
     @classmethod
     @dbsession
-    def user_get_all(self, session):
+    def get_all(self, session):
 
         logger.info('Start getting all users..')
         try:
@@ -126,7 +126,7 @@ class User(Base):
             raise IOError('WARNING!Users not found')
 
     def __repr__(self):
-        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_c!r}:{1.admin!r}>'.format('UserObject', self)
+        return '<{0} {1.firstname!r}:{1.lastname!r}:{1.rfid_card!r}:{1.admin!r}>'.format('UserObject', self)
 
 
 class Key(Base):
@@ -135,22 +135,22 @@ class Key(Base):
 
     id = Column(Integer, primary_key=True)
     room = Column(String(50))
-    rfid_s = Column(String(50), unique=True)
+    rfid_chip = Column(String(50), unique=True)
     status = Column(Boolean, default=True)
 
-    def __init__(self, room, rfid_s, status):
+    def __init__(self, room, rfid_chip, status):
         self.room = room
-        self.rfid_s = rfid_s
+        self.rfid_chip = rfid_chip
         self.status = status
 
     @classmethod
     @dbsession
-    def key_get_by_rfid(self, rfid, session):
+    def get_by_rfid(self, rfid, session):
 
         logger.info('Start getting key by RFID..')
 
         try:
-            key = session.query(Key).filter(Key.rfid_s == rfid).first()
+            key = session.query(Key).filter(Key.rfid_chip == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("Cant get key by rfid: %s , %s", rfid, e)
             raise Exception('Cant get key by RFID. Error:{0}'.format(e))
@@ -161,7 +161,7 @@ class Key(Base):
 
     @classmethod
     @dbsession
-    def key_get_available(self, session):
+    def get_available_keys(self, session):
         logger.info("Start getting available keys..")
 
         try:
@@ -176,7 +176,7 @@ class Key(Base):
     
     @classmethod
     @dbsession
-    def key_get_taken(self, session):
+    def get_taken_keys(self, session):
         logger.info("Start getting taken keys..")
 
         try:
@@ -191,7 +191,7 @@ class Key(Base):
 
     @classmethod
     @dbsession
-    def key_get_all(self, session):
+    def get_all(self, session):
 
         logger.info('Getting all keys..')
 
@@ -207,26 +207,26 @@ class Key(Base):
 
     @classmethod
     @dbsession
-    def key_new(self, room, rfid, session):
+    def create(self, room, rfid, session):
 
         logger.info('Start creating new Key..')
 
         try:
-            if rfid in [key.rfid_s for key in session.query(Key).filter().all()]:
+            if rfid in [key.rfid_chip for key in session.query(Key).filter().all()]:
                 raise IOError('WARNING!Key with this RFID: {0} already exist!'.format(rfid))
 
-            new_key = Key(room=room, rfid_s=rfid, status=True)
+            new_key = Key(room=room, rfid_chip=rfid, status=True)
 
             session.add(new_key)
             logger.info("Created key for room:{0}, with RFID:{1}".format(room, rfid))
-            return session.query(Key).filter(Key.rfid_s == rfid).first()
+            return session.query(Key).filter(Key.rfid_chip == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("Key not created with error:{0}".format(e))
             raise Exception('Key not created with error {0}'.format(e))
 
     @classmethod
     @dbsession
-    def key_delete(self, key, session):
+    def delete(self, key, session):
 
         logger.info('Start deleting key..')
 
@@ -234,11 +234,11 @@ class Key(Base):
             session.delete(key)
             logger.info("Key deleted.")
         except exc.SQLAlchemyError as e:
-            logger.info("Key DO NOT deleted from room:%s with RFID:%s", key.room, key.rfid_s)
+            logger.info("Key DO NOT deleted from room:%s with RFID:%s", key.room, key.rfid_chip)
             raise Exception('Key not deleted with error:{0}'.format(e))
 
     def __repr__(self):
-        return '<{0}: {1.room!r}:{1.rfid_s!r}:{1.status!r} >'.format('KeyObject', self)
+        return '<{0}: {1.room!r}:{1.rfid_chip!r}:{1.status!r} >'.format('KeyObject', self)
 
 
 class UserKeyLink(Base):
@@ -248,7 +248,7 @@ class UserKeyLink(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'), primary_key=False)
     key_id = Column(Integer, ForeignKey('key.id'), primary_key=False)
-    date_taked = Column(DateTime, default=datetime.datetime.utcnow)
+    date_taken = Column(DateTime, default=datetime.datetime.utcnow)
     date_returned = Column(DateTime, nullable=True)
     user = relationship(User, lazy='subquery')
     key = relationship(Key, lazy='subquery')
@@ -259,11 +259,11 @@ class UserKeyLink(Base):
 
     @classmethod
     @dbsession
-    def userkeylink_get_key(self, user, key_rfid, session):
+    def getting_key(self, user, key_rfid, session):
 
         logger.info('Start getting Key..')
         try:
-            key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
+            key = session.query(Key).filter(Key.rfid_chip == key_rfid).first()
 
             if key.status is False:
                 raise IOError('WARNING!Key already taken !')
@@ -274,7 +274,7 @@ class UserKeyLink(Base):
             session.add(new_get)
             session.add(key)
             logger.info('User: %s with RFID:%s get key from room:%s with RFID:%s',
-                        user.lastname, user.rfid_c, key.room, key.rfid_s)
+                        user.lastname, user.rfid_card, key.room, key.rfid_chip)
             return new_get
         except exc.SQLAlchemyError as e:
             logger.info("Some error happend when user %s take a key %s. \n --- %s", user.id, key.id, e)
@@ -282,12 +282,12 @@ class UserKeyLink(Base):
 
     @classmethod
     @dbsession
-    def userkeylink_return_key(self, key_rfid, session):
+    def returning_key(self, key_rfid, session):
 
         logger.info('Starting returned Key..')
         
         try:
-            key = session.query(Key).filter(Key.rfid_s == key_rfid).first()
+            key = session.query(Key).filter(Key.rfid_chip == key_rfid).first()
 
             if key.status is True:
                 logger.info('Key from room:%s already returned!', key.room)
@@ -309,7 +309,7 @@ class UserKeyLink(Base):
             
     @classmethod
     @dbsession
-    def userkeylink_get_data(self, session):
+    def get_all_operations(self, session):
 
         logger.info('Starting returned data..')
 
@@ -323,7 +323,7 @@ class UserKeyLink(Base):
 
     @classmethod
     @dbsession
-    def userkeylink_get_taken_key(self, key_id, session):
+    def get_only_taken_keys(self, key_id, session):
 
         logger.info('Starting returned data..')
 
@@ -337,7 +337,7 @@ class UserKeyLink(Base):
             raise Exception('Error happend returning data:{0}'.format(e))
 
     def __repr__(self):
-        return '<{0}: {1.user!r}:{1.key!r}:{1.date_taked!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)
+        return '<{0}: {1.user!r}:{1.key!r}:{1.date_taken!r}:{1.date_returned!r} >'.format('UserKeyLinkObject', self)
 
 
 
