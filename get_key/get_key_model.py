@@ -72,13 +72,14 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
             else:
                 taken_key = UserKeyLink.get_only_taken_keys(key['data'].id)
                 if taken_key['data']:
-                    taken_info = taken_key['data'].user.firstname + ' ' + taken_key['data'].user.lastname + ', ' + taken_key['data'].date_taken.strftime('%d %b %Y, %H:%M')
+                    taken_info = taken_key['data'].user.firstname + ' ' \
+                                 + taken_key['data'].user.lastname + ', ' \
+                                 + taken_key['data'].date_taken.strftime('%d %b %Y, %H:%M').decode('utf-8')
                     self.info = InfoWindow(
                         label_text=u'Ключ узяв: {}'.format(taken_info)
                     )
                     self.info.show()
                     QtCore.QTimer.singleShot(10000, self.info.close)
-                    print 'This key already taken by user', taken_key['data'].user.firstname, ' ', taken_key['data'].user.lastname, 'at', taken_key['data'].date_taken.strftime('%d %b %Y, %H:%M')
 
     def exit(self):
         self.close()

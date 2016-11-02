@@ -27,8 +27,9 @@ user2 = User.get_by_rfid(users[1]['rfid_card'])['data']
 user3 = User.get_by_rfid(users[2]['rfid_card'])['data']
 key1 = Key.get_by_rfid(keys[0]['rfid_chip'])['data']
 key2 = Key.get_by_rfid(keys[1]['rfid_chip'])['data']
+key3 = Key.get_by_rfid(keys[2]['rfid_chip'])['data']
 
-#import pdb;pdb.set_trace()
+import pdb;pdb.set_trace()
 print "Start operations with keys"
 UserKeyLink.getting_key(user1, key1.rfid_chip)['data']
 UserKeyLink.getting_key(user2, key2.rfid_chip)['data']
