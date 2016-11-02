@@ -8,13 +8,12 @@ class AdminForm(QtGui.QMainWindow, admin_form_design.Ui_AdminFormMain):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
-        self.add_new_user_window = AddNewUser()
-
-        self.add_new_card.clicked.connect(self.register_user)
+        self.new_user_window = AddNewUser()
+        self.new_user.clicked.connect(self.register_user)
         self.exit_to_main.clicked.connect(self.exit)
 
     def register_user(self):
-        self.add_new_user_window.show()
+        self.new_user_window.show()
 
     def exit(self):
         self.close()

@@ -19,16 +19,16 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="1">
-     <widget class="QGroupBox" name="access_settings">
+     <widget class="QGroupBox" name="users_settings">
       <property name="styleSheet">
        <string notr="true">font: 75 20pt &quot;DejaVu Sans Mono for Powerline&quot;;</string>
       </property>
       <property name="title">
-       <string>КЕРУВАННЯ ДОСТУПОМ</string>
+       <string>КЕРУВАННЯ КОРИСТУВАЧАМИ</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="add_new_card">
+        <widget class="QPushButton" name="new_user">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -36,16 +36,15 @@
           </sizepolicy>
          </property>
          <property name="styleSheet">
-          <string notr="true">color:  rgb(145, 255, 20)</string>
+          <string notr="true"/>
          </property>
          <property name="text">
-          <string>ДОДАТИ НОВУ КАРТУ
- КОРИСТУВАЧА</string>
+          <string>ДОДАТИ КОРИСТУВАЧА</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="delete_card">
+        <widget class="QPushButton" name="remove_user">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -53,26 +52,10 @@
           </sizepolicy>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: rgb(255, 67, 1)</string>
+          <string notr="true"/>
          </property>
          <property name="text">
-          <string>ВИДАЛИТИ КАРТУ 
-КОРИСТУВАЧА</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="set_credentials">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>ВСТАНОВИТИ 
-ПРИВІЛЕГІЇ 
-ДОСТУПУ</string>
+          <string>ВИДАЛИТИ КОРИСТУВАЧА</string>
          </property>
         </widget>
        </item>
@@ -86,7 +69,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="add_new_key">
+        <widget class="QPushButton" name="new_key">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -94,12 +77,12 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>ДОДАТИ НОВИЙ КЛЮЧ</string>
+          <string>ДОДАТИ КЛЮЧ</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="delete_key">
+        <widget class="QPushButton" name="remove_key">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -107,7 +90,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>ВИДАЛИТИ КЛЮЧ З СИСТЕМИ</string>
+          <string>ВИДАЛИТИ КЛЮЧ </string>
          </property>
         </widget>
        </item>
