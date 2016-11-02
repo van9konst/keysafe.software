@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import os
 from PyQt4 import QtGui, QtCore
@@ -9,6 +10,7 @@ from get_key.get_key_model import GetKeyWindow
 from read_card.read_card_model import ReadCardWindow
 from welcome_window.welcome_model import WelcomeWindow
 from database.models import User, Key, UserKeyLink
+from info_window.info_model import InfoWindow
 
 
 class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
@@ -16,6 +18,7 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.get_key.clicked.connect(self.get_the_keys)
+        self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def authenticate_user(self):
         self.read_card_window = ReadCardWindow()
@@ -41,10 +44,11 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_the_keys(self):
         # TODO: Open window with user auth
-            user = User.get_by_rfid("11111")['data']
+            user = User.get_by_rfid("77777")['data']
             #user = u'Vova'
             #self.authenticate_user()
-            self.welcome_window(user.firstname)
+            username = user.firstname + u' ' + user.lastname
+            self.welcome_window(username)
             keys = Key.get_all()
             if keys['data']:
                 self.get_key_window(keys['data'], user)

@@ -51,7 +51,7 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
                     buttons[key.id].setStyleSheet('QPushButton {background-color: #cc3300;'
                                                   'color: #ffffff;'
                                                   'font: 75 40pt DejaVu Sans Mono for Powerline;}')
-                buttons[key.id].setText(_translate("GetKeyWindow", str(key.room), None))
+                buttons[key.id].setText(_translate("GetKeyWindow", str(key.room.encode('utf-8')), None))
                 buttons[key.id].setObjectName(key.rfid_chip)
                 buttons[key.id].clicked.connect(self.button_clicked)
                 self.gridLayout_2.addWidget(buttons[key.id], int(row_count % 3), int(row_count / 3))

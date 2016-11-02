@@ -70,10 +70,7 @@ class User(Base):
         try:
             if rfid in [i.rfid_card for i in session.query(User).filter().all()]:
                 raise IOError('WARNING!User with card: {0} already exist!'.format(rfid))
-            if admin:
-                new_user = User(firstname=firstname, lastname=lastname, rfid_card=rfid, admin=admin)
-            else:
-                new_user = User(firstname=firstname, lastname=lastname, rfid_card=rfid, admin=False)
+            new_user = User(firstname=firstname, lastname=lastname, rfid_card=rfid, admin=admin)
             session.add(new_user)
             logger.info("Created user:%s %s, with RFID:%s", firstname, lastname, rfid)
             return session.query(User).filter(User.rfid_card == rfid).first()
@@ -196,7 +193,7 @@ class Key(Base):
         logger.info('Getting all keys..')
 
         try:
-            keys = session.query(Key).filter().all()
+            keys = session.query(Key).filter().order_by('id').all()
         except exc.SQLAlchemyError as e:
             logger.info("Cant get all keys. %s", e)
             raise Exception('Cant get all keys. {0}'.format(e))
@@ -216,9 +213,10 @@ class Key(Base):
                 raise IOError('WARNING!Key with this RFID: {0} already exist!'.format(rfid))
 
             new_key = Key(room=room, rfid_chip=rfid, status=True)
-
+            print 1
             session.add(new_key)
-            logger.info("Created key for room:{0}, with RFID:{1}".format(room, rfid))
+            print 2
+            logger.info(u"Created key for room:{0}, with RFID:{1}".format(room, rfid))
             return session.query(Key).filter(Key.rfid_chip == rfid).first()
         except exc.SQLAlchemyError as e:
             logger.info("Key not created with error:{0}".format(e))
