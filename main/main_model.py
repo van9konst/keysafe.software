@@ -50,10 +50,11 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
             username = user.firstname + u' ' + user.lastname
             self.welcome_window(username)
             keys = Key.get_all()
-            if keys['data']:
-                self.get_key_window(keys['data'], user)
+            if keys['errors'] or keys['warnings']:
+                self.info_error.show()
+                QtCore.QTimer.singleShot(5000, self.info_error.close)
             else:
-                return False
+                self.get_key_window(keys['data'], user)
                 # TODO: Need return error window
         # else:
         #     print 'Bad day motherfucker'

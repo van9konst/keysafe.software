@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from design import choice
 from database.models import UserKeyLink, User
+from info_window.info_model import InfoWindow
 
 
 class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
@@ -31,8 +32,18 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
         self.close()
 
     def press_yes_delete_user(self):
-        print 1234
-        self.close()
+        user = User.get_by_rfid(self.user)['data']
+        deleted = User.delete(user)
+        if deleted['data'] is True:
+            self.info = InfoWindow(label_text=u'Користувача видалено')
+            self.info.show()
+            QtCore.QTimer.singleShot(5000, self.info.close)
+            QtCore.QTimer.singleShot(5000, self.close)
+        else:
+            self.info = InfoWindow(label_text=u'Вибачте, сталася помилка,зверніться будь ласка до адміністратора')
+            self.info.show()
+            QtCore.QTimer.singleShot(5000, self.info.close)
+            QtCore.QTimer.singleShot(5000, self.close)
 
 
 

@@ -56,9 +56,7 @@ class DeleteUsersWindow(QtGui.QMainWindow, delete_users_design.Ui_DeleteUsers):
             self.choice.show()
             QtCore.QTimer.singleShot(10000, self.choice.close)
         else:
-            self.info = InfoWindow(
-                label_text=u'Вибачте, сталася помилка,зверніться будь ласка до адміністратора'
-            )
+            self.info = InfoWindow(label_text=u'Вибачте, сталася помилка,зверніться будь ласка до адміністратора')
             self.info.show()
             QtCore.QTimer.singleShot(5000, self.info.close)
 

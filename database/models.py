@@ -87,6 +87,7 @@ class User(Base):
         try:
             session.delete(user)
             logger.info("User deleted.")
+            return True
         except exc.SQLAlchemyError as e:
             logger.info("User with id: '%s' DO NOT deleted user with RFID:'%s'", user.id, user.rfid_card)
             raise Exception('User not deleted with error:{0}'.format(e))
@@ -231,6 +232,7 @@ class Key(Base):
         try:
             session.delete(key)
             logger.info("Key deleted.")
+            return True
         except exc.SQLAlchemyError as e:
             logger.info("Key DO NOT deleted from room:%s with RFID:%s", key.room, key.rfid_chip)
             raise Exception('Key not deleted with error:{0}'.format(e))
