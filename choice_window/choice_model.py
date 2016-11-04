@@ -3,7 +3,7 @@
 from PyQt4 import QtGui
 
 from design import choice
-from database.models import UserKeyLink
+from database.models import UserKeyLink, User
 
 
 class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
@@ -12,9 +12,11 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
         self.setupUi(self)
         self.user = user
         self.key = key
-        self.label.setText(u'<html><head/><body><p align="center"><span style="font-size:26pt;font-weight:600;">{}</span></p> </body></html>'.format(label_text))
+        self.label.setText(u'<html><head/><body><p align="center"><span style="font-size:21pt;font-weight:600;"> {} </span></p></body></html>'.format(label_text))
         if operation is 'get_key':
             self.yes.clicked.connect(self.press_yes_get_key)
+        elif operation is 'delete_user':
+            self.yes.clicked.connect(self.press_yes_delete_user)
         self.no.clicked.connect(self.press_no)
 
     def press_no(self):
@@ -26,6 +28,10 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
             # TODO: run motors and magnet
         except Exception as e:
             print e
+        self.close()
+
+    def press_yes_delete_user(self):
+        print 1234
         self.close()
 
 
