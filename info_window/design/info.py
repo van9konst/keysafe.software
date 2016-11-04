@@ -22,11 +22,11 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_ReadKeyWindow(object):
-    def setupUi(self, ReadKeyWindow):
-        ReadKeyWindow.setObjectName(_fromUtf8("ReadKeyWindow"))
-        ReadKeyWindow.resize(640, 480)
-        self.ReadKeyFormWidget = QtGui.QWidget(ReadKeyWindow)
+class Ui_InfoWindow(object):
+    def setupUi(self, InfoWindow):
+        InfoWindow.setObjectName(_fromUtf8("InfoWindow"))
+        InfoWindow.resize(640, 480)
+        self.ReadKeyFormWidget = QtGui.QWidget(InfoWindow)
         self.ReadKeyFormWidget.setObjectName(_fromUtf8("ReadKeyFormWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.ReadKeyFormWidget)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -46,14 +46,14 @@ class Ui_ReadKeyWindow(object):
         self.button_ok.setObjectName(_fromUtf8("button_ok"))
         self.verticalLayout_2.addWidget(self.button_ok)
         self.verticalLayout.addWidget(self.horizontalGroupBox)
-        ReadKeyWindow.setCentralWidget(self.ReadKeyFormWidget)
+        InfoWindow.setCentralWidget(self.ReadKeyFormWidget)
 
-        self.retranslateUi(ReadKeyWindow)
-        QtCore.QMetaObject.connectSlotsByName(ReadKeyWindow)
+        self.retranslateUi(InfoWindow)
+        QtCore.QMetaObject.connectSlotsByName(InfoWindow)
 
-    def retranslateUi(self, ReadKeyWindow):
-        ReadKeyWindow.setWindowTitle(_translate("ReadKeyWindow", "MainWindow", None))
-        self.button_ok.setText(_translate("ReadKeyWindow", "OK", None))
+    def retranslateUi(self, InfoWindow):
+        InfoWindow.setWindowTitle(_translate("InfoWindow", "MainWindow", None))
+        self.button_ok.setText(_translate("InfoWindow", "OK", None))
         self.button_ok.setStyleSheet('QPushButton {background-color: #ffffff; color: #000000;'
                                      'font: 75 50pt DejaVu Sans Mono for Powerline;}')
 

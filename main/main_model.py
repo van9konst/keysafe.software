@@ -53,7 +53,6 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         else:
             # TODO: Open window with user auth
             user = User.get_by_rfid("12334")['data']
-            #user = u'Vova'
             #self.authenticate_user()
             username = user.firstname + u' ' + user.lastname
             self.welcome_window(username)
@@ -66,9 +65,6 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
             else:
                 self.get_key_window(keys['data'], user=user)
                 # TODO: Need return error window
-        # else:
-        #     print 'Bad day motherfucker'
-        #     return False
 
     def put_the_keys(self):
         # TODO: Add a window for put keys

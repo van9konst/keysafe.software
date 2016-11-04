@@ -3,7 +3,7 @@
 from PyQt4 import QtGui, QtCore
 
 from design import choice
-from database.models import UserKeyLink, User
+from database.models import UserKeyLink, User, Key
 from info_window.info_model import InfoWindow
 
 
@@ -18,6 +18,8 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
             self.yes.clicked.connect(self.press_yes_get_key)
         elif operation is 'delete_user':
             self.yes.clicked.connect(self.press_yes_delete_user)
+        elif operation is 'delete_key':
+            self.yes.clicked.connect(self.press_yes_delete_key)
         self.no.clicked.connect(self.press_no)
 
     def press_no(self):
@@ -35,7 +37,7 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
         user = User.get_by_rfid(self.user)['data']
         deleted = User.delete(user)
         if deleted['data'] is True:
-            self.info = InfoWindow(label_text=u'Користувача видалено')
+            self.info = InfoWindow(label_text=u'Користувача видалено', parent=self)
             self.info.show()
             QtCore.QTimer.singleShot(5000, self.info.close)
             QtCore.QTimer.singleShot(5000, self.close)
@@ -45,5 +47,22 @@ class ChoiceWindow(QtGui.QMainWindow, choice.Ui_ChoiceWindow):
             QtCore.QTimer.singleShot(5000, self.info.close)
             QtCore.QTimer.singleShot(5000, self.close)
 
+    def press_yes_delete_key(self):
+        key = Key.get_by_rfid(self.key)['data']
+        status = key.status
+        deleted = User.delete(key)
+        if deleted['data'] is True:
+            self.info = InfoWindow(label_text=u'Ключ видалено', parent=self)
+            self.info.show()
+            if status is True:
+                return True
+                # TODO: start returning keys in keys in box
+            QtCore.QTimer.singleShot(5000, self.info.close)
+            QtCore.QTimer.singleShot(5000, self.close)
+        else:
+            self.info = InfoWindow(label_text=u'Вибачте, сталася помилка,зверніться будь ласка до адміністратора')
+            self.info.show()
+            QtCore.QTimer.singleShot(5000, self.info.close)
+            QtCore.QTimer.singleShot(5000, self.close)
 
 
