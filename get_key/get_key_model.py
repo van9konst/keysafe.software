@@ -68,7 +68,8 @@ class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
                     operation='get_key',
                     label_text=u'Ви дійсно хочете взяти ключ від кімнати {} ?'.format(key['data'].room),
                     user=self.user,
-                    key=key['data'].rfid_chip)
+                    key=key['data'].rfid_chip,
+                    parent=self)
                 self.choice.show()
                 QtCore.QTimer.singleShot(10000, self.choice.close)
             else:

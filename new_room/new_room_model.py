@@ -30,7 +30,7 @@ class AddNewRoom(QtGui.QMainWindow, new_room_design.Ui_addRoomWindow):
                     self.info_error.show()
                     QtCore.QTimer.singleShot(5000, self.info_error.close)
                 else:
-                    self.info = InfoWindow(label_text=u'Будь ласка, поставте ключ у приймач протягом 10 секунд')
+                    self.info = InfoWindow(label_text=u'Будь ласка, поставте ключ у приймач протягом 10 секунд', parent=self)
                     self.info.show()
                     QtCore.QTimer.singleShot(5000, self.info.close)
                     QtCore.QTimer.singleShot(5000, self.close)
@@ -43,4 +43,6 @@ class AddNewRoom(QtGui.QMainWindow, new_room_design.Ui_addRoomWindow):
             QtCore.QTimer.singleShot(5000, self.info_error.close)
 
     def exit(self):
+        self.room.clear()
+        self.rfid_chip.clear()
         self.close()

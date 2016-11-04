@@ -50,7 +50,8 @@ class DeleteUsersWindow(QtGui.QMainWindow, delete_users_design.Ui_DeleteUsers):
             self.choice = ChoiceWindow(
                 operation='delete_user',
                 label_text=u'Видалити користувача {} ?'.format(user['data'].firstname + ' ' + user['data'].lastname),
-                user=user['data'].rfid_card)
+                user=user['data'].rfid_card,
+                parent=self)
             self.choice.show()
             QtCore.QTimer.singleShot(10000, self.choice.close)
         elif user['warnings']:

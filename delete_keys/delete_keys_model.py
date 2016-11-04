@@ -56,7 +56,8 @@ class DeleteKeysWindow(QtGui.QMainWindow, delete_keys_design.Ui_DeleteKeys):
             self.choice = ChoiceWindow(
                 operation='delete_key',
                 label_text=u'Видалити ключ від кімнати {} ?'.format(key['data'].room),
-                key=key['data'].rfid_chip)
+                key=key['data'].rfid_chip,
+                parent=self)
             self.choice.show()
             QtCore.QTimer.singleShot(10000, self.choice.close)
         elif key['warnings']:

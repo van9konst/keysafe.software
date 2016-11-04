@@ -35,7 +35,7 @@ class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
                     self.info_error.show()
                     QtCore.QTimer.singleShot(5000, self.info_error.close)
                 else:
-                    self.info = InfoWindow(label_text=u'Користувача додано!')
+                    self.info = InfoWindow(label_text=u'Користувача додано!', parent=self)
                     self.info.show()
                     QtCore.QTimer.singleShot(5000, self.info.close)
                     QtCore.QTimer.singleShot(5000, self.close)
@@ -48,4 +48,7 @@ class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
             QtCore.QTimer.singleShot(5000, self.info_error.close)
 
     def exit(self):
+        self.firstname.clear()
+        self.lastname.clear()
+        self.rfid_card.clear()
         self.close()
