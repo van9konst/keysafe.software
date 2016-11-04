@@ -7,9 +7,10 @@ from database.models import User, Key
 
 
 class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
-    def __init__(self):
+    def __init__(self, first_user=None):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+        self.first_user = first_user
         self.add_rfid_card.clicked.connect(self.connect_rfid_card)
         self.add_new_user.clicked.connect(self.create_user)
         self.exit_to_main.clicked.connect(self.exit)
@@ -27,6 +28,8 @@ class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
         admin = self.admin_checkbox.isChecked()
         try:
             if self.user.get_by_rfid(rfid)['warnings'] and self.key.get_by_rfid(rfid)['warnings']:
+                if self.first_user:
+                    admin = True
                 new_user = self.user.create(firstname, lastname, rfid, admin)
                 if new_user['errors'] or new_user['warnings']:
                     self.info_error.show()

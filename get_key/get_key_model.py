@@ -27,11 +27,13 @@ except AttributeError:
 
 
 class GetKeyWindow(QtGui.QMainWindow, get_key_design.Ui_GetKeyWindow):
-    def __init__(self, keys, user=None):
+    def __init__(self, keys, user):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.user = user
-        if self.user.admin:
+        if keys is None or user is None:
+            self.admin_settings_button.setVisible(True)
+        elif self.user.admin:
             self.admin_settings_button.setVisible(True)
         self.exit_to_main.clicked.connect(self.exit)
         self.adminForm = AdminForm()

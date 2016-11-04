@@ -5,9 +5,7 @@ from PyQt4 import QtGui, QtCore
 from design import delete_users_design
 from choice_window.choice_model import ChoiceWindow
 from info_window.info_model import InfoWindow
-from database.models import Key, UserKeyLink, User
-
-
+from database.models import User
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -55,6 +53,10 @@ class DeleteUsersWindow(QtGui.QMainWindow, delete_users_design.Ui_DeleteUsers):
                 user=user['data'].rfid_card)
             self.choice.show()
             QtCore.QTimer.singleShot(10000, self.choice.close)
+        elif user['warnings']:
+            self.info = InfoWindow(label_text=u'У системі немає активних користувачів')
+            self.info.show()
+            QtCore.QTimer.singleShot(5000, self.info.close)
         else:
             self.info = InfoWindow(label_text=u'Вибачте, сталася помилка,зверніться будь ласка до адміністратора')
             self.info.show()

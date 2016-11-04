@@ -5,12 +5,15 @@ from PyQt4 import QtGui, QtCore
 
 keysafe_dir = os.path.expanduser("~/keysafe.software")
 sys.path.append(keysafe_dir)
+
 from main.design import main_design
 from get_key.get_key_model import GetKeyWindow
 from read_card.read_card_model import ReadCardWindow
 from welcome_window.welcome_model import WelcomeWindow
-from database.models import User, Key, UserKeyLink
+from database.models import User, Key
 from info_window.info_model import InfoWindow
+from new_user.new_user_model import AddNewUser
+
 
 
 class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
@@ -36,30 +39,37 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
 
     def get_key_window(self, keys, user):
         self.get_keys_window = GetKeyWindow(keys, user)
-
         QtCore.QTimer.singleShot(2000, self.get_keys_window.show) # time when welcome window close and this window open
 
         # Time to close get_key_window
         #QtCore.QTimer.singleShot(60000, self.get_keys_window.close)
 
     def get_the_keys(self):
-        # TODO: Open window with user auth
-            user = User.get_by_rfid("77777")['data']
+        if User.get_all()['warnings']:
+            self.info = InfoWindow(label_text=u"Перший запуск програми, будь ласка створіть користувача!")
+            self.info.show()
+            self.new_user = AddNewUser()
+            QtCore.QTimer.singleShot(3000, self.info.close)
+            QtCore.QTimer.singleShot(3000, self.new_user.show)
+        else:
+            # TODO: Open window with user auth
+            user = User.get_by_rfid("12334")['data']
             #user = u'Vova'
             #self.authenticate_user()
             username = user.firstname + u' ' + user.lastname
             self.welcome_window(username)
             keys = Key.get_all()
-            if keys['errors'] or keys['warnings']:
+            if keys['errors']:
                 self.info_error.show()
                 QtCore.QTimer.singleShot(5000, self.info_error.close)
+            elif keys['warnings']:
+                self.get_key_window(keys=None, user=None)
             else:
-                self.get_key_window(keys['data'], user)
+                self.get_key_window(keys['data'], user=user)
                 # TODO: Need return error window
         # else:
         #     print 'Bad day motherfucker'
         #     return False
-
 
     def put_the_keys(self):
         # TODO: Add a window for put keys

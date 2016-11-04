@@ -54,6 +54,7 @@ class User(Base):
     lastname = Column(String(50))
     rfid_card = Column(String(50), unique=True)
     admin = Column(Boolean, default=False)
+    deleted = Column(Boolean, default=False)
 
     def __init__(self, firstname, lastname, rfid_card, admin):
         self.firstname = firstname
@@ -85,7 +86,10 @@ class User(Base):
         logger.info('Start deleting user..')
 
         try:
-            session.delete(user)
+            user.deleted = True
+            user.rfid_card = 'deleted'
+            user.admin = False
+            session.add(user)
             logger.info("User deleted.")
             return True
         except exc.SQLAlchemyError as e:
@@ -114,7 +118,7 @@ class User(Base):
 
         logger.info('Start getting all users..')
         try:
-            users = session.query(User).filter().all()
+            users = session.query(User).filter(User.deleted==False).all()
         except exc.SQLAlchemyError as e:
             logger.info("Can't get users. {0}".format(e))
             raise Exception("Can't get users {0}".format(e))
@@ -135,6 +139,7 @@ class Key(Base):
     room = Column(String(50))
     rfid_chip = Column(String(50), unique=True)
     status = Column(Boolean, default=True)
+    deleted = Column(Boolean, default=False)
 
     def __init__(self, room, rfid_chip, status):
         self.room = room
@@ -163,7 +168,7 @@ class Key(Base):
         logger.info("Start getting available keys..")
 
         try:
-            keys = session.query(Key).filter(Key.status == True).all()
+            keys = session.query(Key).filter(Key.status==True).all()
         except exc.SQLAlchemyError as e:
             logger.info("Can't get available keys")
             raise Exception("Can't get available keys.Error:{0}".format(e))
@@ -178,7 +183,7 @@ class Key(Base):
         logger.info("Start getting taken keys..")
 
         try:
-            keys = session.query(Key).filter(Key.status == False).all()
+            keys = session.query(Key).filter(Key.status==False).all()
         except exc.SQLAlchemyError as e:
             logger.info("Can't get taken keys")
             raise Exception("Can't get taken keys.Error:{0}".format(e))
@@ -194,7 +199,7 @@ class Key(Base):
         logger.info('Getting all keys..')
 
         try:
-            keys = session.query(Key).filter().order_by('id').all()
+            keys = session.query(Key).filter(Key.deleted==False).order_by('id').all()
         except exc.SQLAlchemyError as e:
             logger.info("Cant get all keys. %s", e)
             raise Exception('Cant get all keys. {0}'.format(e))
@@ -230,7 +235,9 @@ class Key(Base):
         logger.info('Start deleting key..')
 
         try:
-            session.delete(key)
+            key.deleted = True
+            key.rfid_chip = 'deleted'
+            session.add(key)
             logger.info("Key deleted.")
             return True
         except exc.SQLAlchemyError as e:
