@@ -15,7 +15,6 @@ from info_window.info_model import InfoWindow
 from new_user.new_user_model import AddNewUser
 
 
-
 class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def __init__(self):
         super(self.__class__, self).__init__()

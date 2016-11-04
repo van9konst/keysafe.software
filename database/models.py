@@ -7,6 +7,7 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from functools import wraps
 
+from sqlalchemy.sql.elements import Null
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     firstname = Column(String(50))
     lastname = Column(String(50))
-    rfid_card = Column(String(50), unique=True)
+    rfid_card = Column(String(50), unique=True, nullable=True)
     admin = Column(Boolean, default=False)
     deleted = Column(Boolean, default=False)
 
@@ -82,12 +83,10 @@ class User(Base):
     @classmethod
     @dbsession
     def delete(self, user, session):
-
         logger.info('Start deleting user..')
-
         try:
             user.deleted = True
-            user.rfid_card = 'deleted'
+            user.rfid_card = None
             user.admin = False
             session.add(user)
             logger.info("User deleted.")
@@ -137,7 +136,7 @@ class Key(Base):
 
     id = Column(Integer, primary_key=True)
     room = Column(String(50))
-    rfid_chip = Column(String(50), unique=True)
+    rfid_chip = Column(String(50), unique=True, nullable=True)
     status = Column(Boolean, default=True)
     deleted = Column(Boolean, default=False)
 
@@ -219,9 +218,7 @@ class Key(Base):
                 raise IOError('WARNING!Key with this RFID: {0} already exist!'.format(rfid))
 
             new_key = Key(room=room, rfid_chip=rfid, status=True)
-            print 1
             session.add(new_key)
-            print 2
             logger.info(u"Created key for room:{0}, with RFID:{1}".format(room, rfid))
             return session.query(Key).filter(Key.rfid_chip == rfid).first()
         except exc.SQLAlchemyError as e:
@@ -236,7 +233,7 @@ class Key(Base):
 
         try:
             key.deleted = True
-            key.rfid_chip = 'deleted'
+            key.rfid_chip = None
             session.add(key)
             logger.info("Key deleted.")
             return True
