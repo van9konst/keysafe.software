@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtGui, QtCore
-
+import zmq
 from design import new_room_design
 from info_window.info_model import InfoWindow
 from database.models import User, Key
@@ -18,7 +18,16 @@ class AddNewRoom(QtGui.QMainWindow, new_room_design.Ui_addRoomWindow):
         self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def connect_rfid_chip(self):
-        pass
+        self.startReading()
+        self.read_card = InfoWindow(label_text=u"Піднесіть ключ", parent=self, hide_ok=True, read='key')
+        self.read_card.show()
+        QtCore.QTimer.singleShot(5000, self.read_card.return_rfid)
+
+    def startReading(self):
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.connect('tcp://127.0.0.1:5555')
+        socket.send("readTeacherId")
 
     def create_key(self):
         room = unicode(self.room.text().toUtf8(), encoding="UTF-8")

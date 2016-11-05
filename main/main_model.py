@@ -19,13 +19,14 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.get_key.clicked.connect(self.get_the_keys)
+        self.return_key.clicked.connect(self.put_the_keys)
         self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def authenticate_user(self):
         self.startReading()
         self.read_card_window = ReadCardWindow()
         self.read_card_window.show()
-        QtCore.QTimer.singleShot(10000, self.read_card_window.read_card_result)
+        QtCore.QTimer.singleShot(4000, self.read_card_window.read_card_result)
 
     def get_the_keys(self):
         if User.get_all()['warnings']:
@@ -40,12 +41,6 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
     def put_the_keys(self):
         # TODO: Add a window for put keys
         return
-
-    def startReadingRoomCard(self):
-        context = zmq.Context()
-        socket = context.socket(zmq.REQ)
-        socket.connect('tcp://127.0.0.1:5555')
-        socket.send("readRoomId")
 
     def startReading(self):
         context = zmq.Context()

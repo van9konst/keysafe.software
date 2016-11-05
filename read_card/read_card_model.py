@@ -10,9 +10,10 @@ from database.models import User, Key
 
 
 class ReadCardWindow(QtGui.QMainWindow, read_card_design.Ui_ReadKeyWindow):
-    def __init__(self):
+    def __init__(self, parent=None):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+        self.parent = parent
         self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def read_card_result(self):
