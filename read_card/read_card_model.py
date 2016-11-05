@@ -22,11 +22,14 @@ class ReadCardWindow(QtGui.QMainWindow, read_card_design.Ui_ReadKeyWindow):
         socket.connect('tcp://127.0.0.1:5555')
         socket.send("getTeacherId")
         msg = socket.recv()
-        check_user = User.get_by_rfid(msg)
-        if check_user['warnings']:
-            self.close()
+        if msg != 0:
+            check_user = User.get_by_rfid(msg)
+            if check_user['warnings']:
+                self.close()
+            else:
+                self.login(check_user['data'])
+                self.close()
         else:
-            self.login(check_user['data'])
             self.close()
 
     def welcome_window(self, label_text):

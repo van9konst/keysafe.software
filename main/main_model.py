@@ -39,8 +39,10 @@ class MainFirstWindow(QtGui.QMainWindow, main_design.Ui_FirstWindow):
             self.authenticate_user()
 
     def put_the_keys(self):
-        # TODO: Add a window for put keys
-        return
+        self.startReading()
+        self.read_card = InfoWindow(label_text=u"Піднесіть ключ до зчитувача", hide_ok=True)
+        self.read_card.show()
+        QtCore.QTimer.singleShot(5000, self.read_card.return_key)
 
     def startReading(self):
         context = zmq.Context()

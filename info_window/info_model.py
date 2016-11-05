@@ -3,6 +3,7 @@ import zmq
 from PyQt4 import QtGui, QtCore
 
 from design import info
+from database.models import UserKeyLink
 
 
 class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
@@ -23,6 +24,35 @@ class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
         elif self.parent:
             self.parent.close()
         self.close()
+
+    def return_key(self):
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.connect('tcp://127.0.0.1:5555')
+        socket.send("getTeacherId")
+        msg = socket.recv()
+        if msg != 0:
+            returning = UserKeyLink.returning_key(msg)
+            if returning['warnings']:
+                self.info = InfoWindow(label_text=u"Цей ключ вже повернуто!", parent=self)
+                self.info.show()
+                QtCore.QTimer.singleShot(2000, self.info.close)
+                QtCore.QTimer.singleShot(2000, self.close)
+            elif returning['errors']:
+                self.info = InfoWindow(label_text=u"Сталася помилка,зверністья до адміністратора!", parent=self)
+                self.info.show()
+                QtCore.QTimer.singleShot(2000, self.info.close)
+                QtCore.QTimer.singleShot(2000, self.close)
+            else:
+                self.info = InfoWindow(label_text=u"Вставле ключ у приймач протягом 10 секунт", parent=self)
+                self.info.show()
+                QtCore.QTimer.singleShot(5000, self.info.close)
+                QtCore.QTimer.singleShot(5000, self.close)
+        else:
+            self.info = InfoWindow(label_text=u"Ключа не виявлено", parent=self)
+            self.info.show()
+            QtCore.QTimer.singleShot(2000, self.info.close)
+            QtCore.QTimer.singleShot(2000, self.close)
 
     def return_rfid(self):
         context = zmq.Context()
