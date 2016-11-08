@@ -12,9 +12,9 @@ class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
         self.setupUi(self)
         self.read = read
         self.parent = parent
+        self.previous_parent = previous_parent
         if hide_ok:
             self.button_ok.setVisible(False)
-        self.previous_parent = previous_parent
         self.label.setText(u'<html><head/><body><p align="center"><span style="font-size:26pt;font-weight:600;">{}</span></p> </body></html>'.format(label_text))
         self.button_ok.clicked.connect(self.ok)
 
@@ -36,15 +36,15 @@ class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
             if returning['warnings']:
                 self.info = InfoWindow(label_text=u"Цей ключ вже повернуто!", parent=self)
                 self.info.show()
-                QtCore.QTimer.singleShot(2000, self.info.close)
-                QtCore.QTimer.singleShot(2000, self.close)
+                QtCore.QTimer.singleShot(3000, self.info.close)
+                QtCore.QTimer.singleShot(3000, self.close)
             elif returning['errors']:
                 self.info = InfoWindow(label_text=u"Сталася помилка,зверністья до адміністратора!", parent=self)
                 self.info.show()
-                QtCore.QTimer.singleShot(2000, self.info.close)
-                QtCore.QTimer.singleShot(2000, self.close)
+                QtCore.QTimer.singleShot(3000, self.info.close)
+                QtCore.QTimer.singleShot(3000, self.close)
             else:
-                self.info = InfoWindow(label_text=u"Вставле ключ у приймач протягом 10 секунт", parent=self)
+                self.info = InfoWindow(label_text=u"Вставте ключ у приймач", parent=self)
                 self.info.show()
                 QtCore.QTimer.singleShot(5000, self.info.close)
                 QtCore.QTimer.singleShot(5000, self.close)

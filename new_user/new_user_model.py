@@ -16,6 +16,9 @@ class AddNewUser(QtGui.QMainWindow, new_user_design.Ui_AddUserWindow):
         self.exit_to_main.clicked.connect(self.exit)
         self.user = User
         self.key = Key
+        self.firstname.clear()
+        self.lastname.clear()
+        self.rfid_card.clear()
         self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def connect_rfid_card(self):

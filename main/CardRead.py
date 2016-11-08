@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import signal
 import threading
-
+import time
 import RPi.GPIO as GPIO
 import zmq
 import MFRC522
@@ -28,6 +28,7 @@ def readTeacherCardData():
     MIFAREReader = MFRC522.MFRC522()
     # This loop keeps checking for chips. If one is near it will get the UID and authenticate
     threading.Timer(5.0, stop, [])
+    timeout = time.time() + 15
     while continue_reading:
         print "read cycle"
         # Scan for cards
@@ -51,48 +52,15 @@ def readTeacherCardData():
                 continue_reading = False
                 MIFAREReader.MFRC522_StopCrypto1()
             else:
-                print "Authentication error"
-
-
-def readRoomCardData():
-    global continue_reading
-    global room_id
-    room_id = 0
-    # Hook the SIGINT
-    signal.signal(signal.SIGINT, end_read)
-    # Create an object of the class MFRC522
-    MIFAREReader = MFRC522.MFRC522()
-    # This loop keeps checking for chips. If one is near it will get the UID and authenticate
-    threading.Timer(5.0, stop, [])
-    while continue_reading:
-        print "read cycle"
-        # Scan for cards
-        (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-        # If a card is found
-        if status == MIFAREReader.MI_OK:
-            print "Card detected"
-        # Get the UID of the card
-        (status, uid) = MIFAREReader.MFRC522_Anticoll()
-        # If we have the UID, continue
-        if status == MIFAREReader.MI_OK:
-            # This is the default key for authentication
-            key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-            # Select the scanned tag
-            MIFAREReader.MFRC522_SelectTag(uid)
-            # Authenticate
-            status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
-            # Check if authenticated
-            if status == MIFAREReader.MI_OK:
-                room_id = ','.join([str(x) for x in uid])
-                continue_reading = False
-                MIFAREReader.MFRC522_StopCrypto1()
-            else:
-                print "Authentication error"
+                if time.time() > timeout:
+                    stop()
+                    print "Authentication error"
 
 
 def stop():
     global continue_reading
     continue_reading = False
+    print 'stop cycle'
 
 
 def start():
@@ -111,13 +79,6 @@ def start():
         elif msg == 'getTeacherId':
             continue_reading = False
             socket.send(str(teacher_id))
-        elif msg == 'readRoomId':
-            continue_reading = True
-            readRoomCardData()
-            socket.send('reading started')
-        elif msg == 'getRoomId':
-            continue_reading = False
-            socket.send(str(room_id))
         elif msg == 'stop':
             continue_reading = False
             socket.send("reading stopped")

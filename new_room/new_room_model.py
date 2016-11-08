@@ -15,6 +15,8 @@ class AddNewRoom(QtGui.QMainWindow, new_room_design.Ui_addRoomWindow):
         self.exit_to_main.clicked.connect(self.exit)
         self.user = User
         self.key = Key
+        self.room.clear()
+        self.rfid_chip.clear()
         self.info_error = InfoWindow(label_text=u'Вибачте, сталася помилка, зверніться будь ласка до адміністратора')
 
     def connect_rfid_chip(self):
