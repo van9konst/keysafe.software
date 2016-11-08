@@ -51,10 +51,9 @@ def readTeacherCardData():
                 teacher_id = ','.join([str(x) for x in uid])
                 continue_reading = False
                 MIFAREReader.MFRC522_StopCrypto1()
-            else:
-                if time.time() > timeout:
-                    stop()
-                    print "Authentication error"
+        elif time.time() > timeout:
+            stop()
+            print "Authentication error"
 
 
 def stop():
