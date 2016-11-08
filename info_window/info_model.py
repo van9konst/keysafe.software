@@ -31,7 +31,7 @@ class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
         socket.connect('tcp://127.0.0.1:5555')
         socket.send("getTeacherId")
         msg = socket.recv()
-        if msg != 0:
+        if msg != '0':
             returning = UserKeyLink.returning_key(msg)
             if returning['warnings']:
                 self.info = InfoWindow(label_text=u"Цей ключ вже повернуто!", parent=self)
@@ -60,7 +60,7 @@ class InfoWindow(QtGui.QMainWindow, info.Ui_InfoWindow):
         socket.connect('tcp://127.0.0.1:5555')
         socket.send("getTeacherId")
         msg = socket.recv()
-        if msg != 0:
+        if msg != '0':
             if self.read is "user":
                 self.parent.rfid_card.clear()
                 self.parent.rfid_card.setText(msg)
