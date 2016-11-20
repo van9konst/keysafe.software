@@ -4,23 +4,28 @@ import time
 
 
 class MotorDRV_a4988(object):
-    def __init__(self, steps=3, direct=5, NOTenb=11):
+    def __init__(self, step=3, dir=5, NOTenable=11):
         """
-        :param steps: pin generate controll signal CS*
-        :param direct: pin define roll dirrection
-        :param NOTenb: pin define driver enable/disable.
+        :param step: pin generate controll signal CS*
+        :param dir: pin define roll dirrection
+        :param NOTenable: pin define driver enable/disable.
         gpio.output(NOTenb, 0)==enable # if NOTenb set to 1 -> driver off
         """
-        self.direction = steps
-        self.step_crc = direct
-        self.NOTenb = NOTenb
+        self.direction = dir
+        self.step_cs = step
+        self.NOTenb = NOTenable
         gpio.setmode(gpio.BOARD)
-        for pin in ctrl_pin:
-            gpio.setup(pin, gpio.OUT)
-            gpio.output(pin, 0)
+        gpio.setup(self.direction, gpio.OUT)
+        gpio.output(self.step_cs, 0)
+        gpio.output(self.NOTenb, 1)
 
-    def spin(self, steps):
+    def spin(self, steps, roll_dirr=0):
+        """
+        :param steps: amount of steps to roll
+        :param roll_dirr: roll dirrection. 0 or 1
+        """
         gpio.output(self.NOTenb, 0)  # On driver
+        gpio.output(self.direction, roll_dirr)  # On driver
 
         # parametrs for acceleration motor work t==time
         c_steps_accelerate = 100  # steps count for acceleration
@@ -29,10 +34,11 @@ class MotorDRV_a4988(object):
         t_step_cur = 0
         t_step_value = (t_step_start - t_step_max) / c_steps_accelerate
         t_step = t_step_start
+        cs = 0  # controll signall init
 
         for i in range(0, steps):
             cs ^= 1
-            gpio.output(self.step_crc, cs)
+            gpio.output(self.step_cs, cs)
 
             # cheking for reaching END bounds position #last 100steps
             if (i > steps - c_steps_accelerate) and (t_step < t_step_start):
@@ -42,7 +48,7 @@ class MotorDRV_a4988(object):
             elif (i < c_steps_accelerate) and (t_step > t_step_max):
                 t_step -= t_step_value
                 time.sleep(t_step)
-            # bounds between  begin_end # [x+100..x-100]
+            # bounds between  begin-end # [x+100..x-100]
             else:
                 time.sleep(t_step_max)
         gpio.output(self.NOTenb, 1)  # Off driver
