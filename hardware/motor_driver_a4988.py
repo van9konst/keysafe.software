@@ -16,6 +16,8 @@ class MotorDRV_a4988(object):
         self.NOTenb = NOTenable
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.direction, gpio.OUT)
+        gpio.setup(self.step_cs, gpio.OUT)
+        gpio.setup(self.NOTenb, gpio.OUT)
         gpio.output(self.step_cs, 0)
         gpio.output(self.NOTenb, 1)
 
@@ -60,7 +62,7 @@ if __name__ == "__main__":
     pin_step = 5
     # pin_dir = 7
     # pin_step = 8
-    pin_enb = 11
+    pin_enb = 10
     gpio.setmode(gpio.BOARD)
     # gpio.setup(7, gpio.OUT)
     # gpio.setup(8, gpio.OUT)
@@ -75,12 +77,12 @@ if __name__ == "__main__":
     t_step_max = 0.001
     t_step_start = 0.004
     t_step_cur = 0
-    steps = 900
+    steps = 2875
     c_steps_accelerate = 100
     t_step_value = (t_step_start - t_step_max) / c_steps_accelerate
     t_step = t_step_start
     gpio.output(pin_enb, 0)
-    for j in range(1, 5):
+    for j in range(1, 3):
         gpio.output(pin_dir, j % 2)
         cs = 0  # control signal
         for i in range(0, steps):
